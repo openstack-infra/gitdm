@@ -447,14 +447,12 @@ ParseOpts ()
 #
 # Snarf changesets.
 #
-print 'Grabbing changesets...\r',
-sys.stdout.flush ()
+print >> sys.stderr, 'Grabbing changesets...\r',
 
 printcount = CSCount = 0
 while (1):
     if (printcount % 50) == 0:
-        print 'Grabbing changesets...%d\r' % printcount,
-        sys.stdout.flush ()
+        print >> sys.stderr, 'Grabbing changesets...%d\r' % printcount,
     printcount += 1
     p = grabpatch()
     if not p:
@@ -469,7 +467,7 @@ while (1):
         for sobemail, sob in p.sobs:
             sob.addsob (p)
     CSCount += 1
-print 'Grabbing changesets...done'
+print >> sys.stderr, 'Grabbing changesets...done'
 
 if DumpDB:
     database.DumpDB ()
