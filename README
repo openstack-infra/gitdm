@@ -1,0 +1,107 @@
+The code in this directory makes up the "git data miner," a simple hack
+which attempts to figure things out from the revision history in a git
+repository. 
+
+RUNNING GITDM
+
+Run it like this:
+
+   git log -p -M [details] | gitdm [options]
+
+The [details] tell git which changesets are of interest; the [options] can
+be:
+
+	-a	If a patch contains signoff lines from both Andrew Morton 
+		and Linus Torvalds, omit Linus's.
+
+	-c file Specify the name of the gitdm configuration file.  
+	   	By default, "./gitdm.config" is used.
+
+	-d	Omit the developer reports, giving employer information
+         	only. 
+
+	-D	Rather than create the usual statistics, create a 
+		file providing lines changed per day, suitable for
+		feeding to a tool like gnuplot.
+
+	-h file	Generate HTML output to the given file
+
+	-l num	Only list the top <num> entries in each report.
+
+	-o file	Write text output to the given file (default is stdout).
+
+	-r pat	Only generate statistics for changes to files whose 
+	   	name matches the given regular expression.
+
+	-s	Ignore Signed-off-by lines which match the author of 
+		each patch.
+
+	-u 	Group all unknown developers under the "(Unknown)"
+ 	        employer. 
+
+	-z 	Dump out the hacker database to "database.dump".
+
+A typical command line used to generate the "who write 2.6.x" LWN articles
+looks like:
+
+    git log -p -M v2.6.19..v2.6.20 | \
+	gitdm -u -s -a -o results -h results.html
+
+
+CONFIGURATION FILE
+
+The main purpose of the configuration file is to direct the mapping of
+email addresses onto employers.  Please note that the config file parser is
+exceptionally stupid and unrobust at this point, but it gets the job done.  
+
+Blank lines and lines beginning with "#" are ignored.  Everything else
+specifies a file with some sort of mapping:
+
+EmailAliases file
+
+	Developers often post code under a number of different email
+	addresses, but it can be desirable to group them all together in
+	the statistics.  An EmailAliases file just contains a bunch of
+	lines of the form:
+
+		alias@address  canonical@address
+
+	Any patches originating from alias@address will be treated as if
+	they had come from canonical@address.
+
+
+EmailMap file
+
+	Map email addresses onto employers.  These files contain lines
+	like:
+
+		[user@]domain  employer  [< yyyy-mm-dd]
+
+	If the "user@" portion is missing, all email from the given domain
+	will be treated as being associated with the given employer.  If a
+	date is provided, the entry is only valid up to that date;
+	otherwise it is considered valid into the indefinite future.  This
+	feature can be useful for properly tracking developers' work when
+	they change employers but do not change email addresses.
+
+
+GroupMap file employer
+
+	This is a variant of EmailMap provided for convenience; it contains
+	email addresses only, all of which are associated with the given
+	employer.
+
+
+NOTES AND CREDITS
+
+Gitdm was written by Jonathan Corbet; many useful contributions have come
+from Greg Kroah-Hartman.
+
+Please note that this tool is provided in the hope that it will be useful,
+but it is not put forward as an example of excellence in design or
+implementation.  Hacking on gitdm tends to stop the moment it performs
+whatever task is required of it at the moment.  Patches to make it less
+hacky, less ugly, and more robust are welcome.
+
+Jonathan Corbet
+corbet@lwn.net

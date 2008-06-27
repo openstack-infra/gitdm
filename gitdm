@@ -1,0 +1,499 @@
+#!/usr/bin/python
+#
+
+#
+# This code is part of the LWN git data miner.
+#
+# Copyright 2007 LWN.net
+# Copyright 2007 Jonathan Corbet <corbet@lwn.net>
+#
+# This file may be distributed under the terms of the GNU General
+# Public License, version 2.
+
+
+import database, ConfigFile
+import getopt, datetime
+import os, re, sys, rfc822, string
+
+#
+# Some people, when confronted with a problem, think "I know, I'll use regular
+# expressions." Now they have two problems.
+#    -- Jamie Zawinski
+#
+Pcommit = re.compile (r'^commit ([0-9a-f]+)$')
+Pauthor = re.compile (r'^Author: ([^<]+)\s<([^>]+)>$')
+Psob = re.compile (r'Signed-off-by:\s+([^<]+)\s+<([^>]+)>')
+Pmerge = re.compile (r'^Merge:.*$')
+Padd = re.compile (r'^\+[^\+].*$')
+Prem = re.compile (r'^-[^-].*$')
+Pdate = re.compile (r'^(Commit)?Date:\s+(.*)$')
+Pfilea = re.compile (r'^---\s+(.*)$')
+Pfileb = re.compile (r'^\+\+\+\s+(.*)$')
+
+class patch:
+    pass
+
+
+#
+# Control options.
+#
+Outfile = sys.stdout
+ListCount = 999999
+MapUnknown = 0
+DevReports = 1
+DateStats = 0
+AuthorSOBs = 1
+FileFilter = None
+AkpmOverLt = 0
+DumpDB = 0
+CFName = 'gitdm.config'
+#
+# Options:
+#
+# -a		Andrew Morton's signoffs shadow Linus's
+# -c cfile	Specify a configuration file
+# -d		Output individual developer stats
+# -D		Output date statistics
+# -h hfile	HTML output to hfile
+# -l count	Maximum length for output lists
+# -o file	File for text output
+# -r pattern	Restrict to files matching pattern
+# -s		Ignore author SOB lines
+# -u		Map unknown employers to '(Unknown)'
+# -z		Dump out the hacker database at completion
+
+def ParseOpts ():
+    global Outfile, ListCount, MapUnknown, HTMLfile, DevReports
+    global DateStats, AuthorSOBs, FileFilter, AkpmOverLt, DumpDB
+    global CFName
+
+    opts, rest = getopt.getopt (sys.argv[1:], 'adDh:l:o:r:suz')
+    for opt in opts:
+        if opt[0] == '-a':
+            AkpmOverLt = 1
+        elif opt[0] == '-c':
+            CFName = opt[1]
+        elif opt[0] == '-d':
+            DevReports = 0
+        elif opt[0] == '-D':
+            DateStats = 1
+        elif opt[0] == '-h':
+            HTMLfile = open (opt[1], 'w')
+        elif opt[0] == '-l':
+            ListCount = int (opt[1])
+        elif opt[0] == '-o':
+            Outfile = open (opt[1], 'w')
+        elif opt[0] == '-r':
+            print 'Filter on "%s"' % (opt[1])
+            FileFilter = re.compile (opt[1])
+        elif opt[0] == '-s':
+            AuthorSOBs = 0
+        elif opt[0] == '-u':
+            MapUnknown = 1
+        elif opt[0] == '-z':
+            DumpDB = 1
+        
+
+
+def LookupStoreHacker (name, email):
+    email = database.RemapEmail (email)
+    h = database.LookupEmail (email)
+    if h: # already there
+        return h
+    elist = database.LookupEmployer (email, MapUnknown)
+    h = database.LookupName (name)
+    if h: # new email
+        h.addemail (email, elist)
+        return h
+    return database.StoreHacker(name, elist, email)
+
+#
+# Date tracking.
+#
+
+DateMap = { }
+
+def AddDateLines(date, lines):
+    if lines > 1000000:
+        print 'Skip big patch (%d)' % lines
+        return
+    dt = (date.year, date.month, date.day)
+    try:
+        DateMap[date] += lines
+    except KeyError:
+        DateMap[date] = lines
+
+def PrintDateStats():
+    dates = DateMap.keys ()
+    dates.sort ()
+    total = 0
+    datef = open ('datelc', 'w')
+    for date in dates:
+        total += DateMap[date]
+        datef.write ('%d/%02d/%02d %6d %7d\n' % (date[0], date[1], date[2],
+                                    DateMap[date], total))
+
+#
+# The core hack for grabbing the information about a changeset.
+#
+def grabpatch():
+    global NextLine, TotalAdded, TotalRemoved, TotalChanged
+    
+    while (1):
+        m = Pcommit.match (NextLine)
+        if m:
+            break;
+        NextLine = sys.stdin.readline ()
+        if not NextLine:
+            return
+
+    p = patch()
+    p.commit = m.group (1)
+    p.merge = p.added = p.removed = 0
+    p.author = LookupStoreHacker('Unknown hacker', 'unknown@hacker.net')
+    p.email = 'unknown@hacker.net'
+    p.sobs = [ ]
+    NextLine = sys.stdin.readline ()
+    ignore = (FileFilter is not None)
+    while NextLine:
+        Line = NextLine
+        #
+        # If this line starts a new commit, drop out.
+        #
+        m = Pcommit.match (Line)
+        if m:
+            break
+        NextLine = sys.stdin.readline ()
+        #
+        # Maybe it's an author line?
+        #
+        m = Pauthor.match (Line)
+        if m:
+            p.email = database.RemapEmail (m.group (2))
+            p.author = LookupStoreHacker(m.group (1), p.email)
+            continue
+        #
+        # Could be a signed-off-by:
+        #
+        m = Psob.search (Line)
+        if m:
+            email = database.RemapEmail (m.group (2))
+            sobber = LookupStoreHacker(m.group (1), email)
+            if sobber != p.author or AuthorSOBs:
+                p.sobs.append ((email, LookupStoreHacker(m.group (1), m.group (2))))
+            continue
+        #
+        # If this one is a merge, make note of the fact.
+        #
+        m = Pmerge.match (Line)
+        if m:
+            p.merge = 1
+            continue
+        #
+        # See if it's the date.
+        #
+        m = Pdate.match (Line)
+        if m:
+            dt = rfc822.parsedate(m.group (2))
+            p.date = datetime.date (dt[0], dt[1], dt[2])
+            continue
+        #
+        # If we have a file filter, check for file lines.
+        #
+        if FileFilter:
+            ignore = ApplyFileFilter (Line, ignore)
+        #
+        # OK, maybe it's part of the diff itself.
+        #
+        if not ignore:
+            if Padd.match (Line):
+                p.added += 1
+                continue
+            if Prem.match (Line):
+                p.removed += 1        
+    #
+    # Record some global information - but only if this patch had
+    # stuff which wasn't ignored.  This work should be done
+    # elsewhere,
+    #
+    if ((p.added + p.removed) > 0 or not FileFilter) and not p.merge:
+        TotalAdded += p.added
+        TotalRemoved += p.removed
+        TotalChanged += max (p.added, p.removed)
+        AddDateLines (p.date, max (p.added, p.removed))
+        empl = p.author.emailemployer (p.email, p.date)
+        empl.AddCSet (p)
+        if AkpmOverLt:
+            TrimLTSOBs (p)
+        for sobemail, sobber in p.sobs:
+            empl = sobber.emailemployer (sobemail, p.date)
+            empl.AddSOB()
+    return p
+
+
+def ApplyFileFilter (line, ignore):
+    #
+    # If this is the first file line (--- a/), set ignore one way
+    # or the other.
+    #
+    m = Pfilea.match (line)
+    if m:
+        file = m.group (1)
+        if FileFilter.search (file):
+            return 0
+        return 1
+    #
+    # For the second line, we can turn ignore off, but not on
+    #
+    m = Pfileb.match (line)
+    if m:
+        file = m.group (1)
+        if FileFilter.search (file):
+            return 0
+    return ignore
+
+#
+# If this patch is signed off by both Andrew Morton and Linus Torvalds,
+# remove the (redundant) Linus signoff.
+#
+def TrimLTSOBs (p):
+    if Linus in p.sobs and Akpm in p.sobs:
+        p.sobs.remove (Linus)
+
+#
+# HTML output support stuff.
+#
+HTMLfile = None
+HTMLclass = 0
+HClasses = ['Even', 'Odd']
+
+THead = '''<p>
+<table cellspacing=3>
+<tr><th colspan=3>%s</th></tr>
+'''
+
+
+def BeginReport (title):
+    global HTMLclass
+    
+    Outfile.write ('\n%s\n' % title)
+    if HTMLfile:
+        HTMLfile.write (THead % title)
+        HTMLclass = 0
+
+TRow = '''    <tr class="%s">
+<td>%s</td><td align="right">%d</td><td align="right">%.1f%%</td></tr>
+'''
+
+def ReportLine (text, count, pct):
+    global HTMLclass
+    if count == 0:
+        return
+    Outfile.write ('%-25s %4d (%.1f%%)\n' % (text, count, pct))
+    if HTMLfile:
+        HTMLfile.write (TRow % (HClasses[HTMLclass], text, count, pct))
+        HTMLclass ^= 1
+
+def EndReport ():
+    if HTMLfile:
+        HTMLfile.write ('</table>\n\n')
+        
+#
+# Comparison and report generation functions.
+#
+def ComparePCount (h1, h2):
+    return len (h2.patches) - len (h1.patches)
+
+def ReportByPCount (hlist):
+    hlist.sort (ComparePCount)
+    count = 0
+    BeginReport ('Developers with the most changesets')
+    for h in hlist:
+        pcount = len (h.patches)
+        changed = max(h.added, h.removed)
+        delta = h.added - h.removed
+        if pcount > 0:
+            ReportLine (h.name, pcount, (pcount*100.0)/CSCount)
+        count += 1
+        if count >= ListCount:
+            break
+    EndReport ()
+            
+def CompareLChanged (h1, h2):
+    return max(h2.added, h2.removed) - max(h1.added, h1.removed)
+
+def ReportByLChanged (hlist):
+    hlist.sort (CompareLChanged)
+    count = 0
+    BeginReport ('Developers with the most changed lines')
+    for h in hlist:
+        pcount = len (h.patches)
+        changed = max(h.added, h.removed)
+        delta = h.added - h.removed
+        if (h.added + h.removed) > 0:
+            ReportLine (h.name, changed, (changed*100.0)/TotalChanged)
+        count += 1
+        if count >= ListCount:
+            break
+    EndReport ()
+            
+def CompareLRemoved (h1, h2):
+    return (h2.removed - h2.added) - (h1.removed - h1.added)
+
+def ReportByLRemoved (hlist):
+    hlist.sort (CompareLRemoved)
+    count = 0
+    BeginReport ('Developers with the most lines removed')
+    for h in hlist:
+        pcount = len (h.patches)
+        changed = max(h.added, h.removed)
+        delta = h.added - h.removed
+        if delta < 0:
+            ReportLine (h.name, -delta, (-delta*100.0)/TotalRemoved)
+        count += 1
+        if count >= ListCount:
+            break
+    EndReport ()
+
+def CompareEPCount (e1, e2):
+    return e2.count - e1.count
+
+def ReportByPCEmpl (elist):
+    elist.sort (CompareEPCount)
+    count = 0
+    BeginReport ('Top changeset contributors by employer')
+    for e in elist:
+        if e.count != 0:
+            ReportLine (e.name, e.count, (e.count*100.0)/CSCount)
+        count += 1
+        if count >= ListCount:
+            break
+    EndReport ()
+
+
+
+def CompareELChanged (e1, e2):
+    return e2.changed - e1.changed
+
+def ReportByELChanged (elist):
+    elist.sort (CompareELChanged)
+    count = 0
+    BeginReport ('Top lines changed by employer')
+    for e in elist:
+        if e.changed != 0:
+            ReportLine (e.name, e.changed, (e.changed*100.0)/TotalChanged)
+        count += 1
+        if count >= ListCount:
+            break
+    EndReport ()
+
+
+
+def CompareSOBs (h1, h2):
+    return len (h2.signoffs) - len (h1.signoffs)
+
+def ReportBySOBs (hlist):
+    hlist.sort (CompareSOBs)
+    totalsobs = 0
+    for h in hlist:
+        totalsobs += len (h.signoffs)
+    count = 0
+    BeginReport ('Developers with the most signoffs (total %d)' % totalsobs)
+    for h in hlist:
+        scount = len (h.signoffs)
+        if scount > 0:
+            ReportLine (h.name, scount, (scount*100.0)/totalsobs)
+        count += 1
+        if count >= ListCount:
+            break
+    EndReport ()
+
+def CompareESOBs (e1, e2):
+    return e2.sobs - e1.sobs
+
+def ReportByESOBs (elist):
+    elist.sort (CompareESOBs)
+    totalsobs = 0
+    for e in elist:
+        totalsobs += e.sobs
+    count = 0
+    BeginReport ('Employers with the most signoffs (total %d)' % totalsobs)
+    for e in elist:
+        if e.sobs > 0:
+            ReportLine (e.name, e.sobs, (e.sobs*100.0)/totalsobs)
+        count += 1
+        if count >= ListCount:
+            break
+    EndReport ()
+
+#
+# Here starts the real program.  Read the config files.
+#
+ConfigFile.ConfigFile (CFName)
+
+#
+# Let's pre-seed the database with a couple of hackers
+# we want to remember.
+#
+Linus = ('torvalds@linux-foundation.org',
+         LookupStoreHacker ('Linus Torvalds', 'torvalds@linux-foundation.org'))
+Akpm = ('akpm@linux-foundation.org',
+        LookupStoreHacker ('Andrew Morton', 'akpm@linux-foundation.org'))
+
+NextLine = sys.stdin.readline ()
+TotalChanged = TotalAdded = TotalRemoved = 0
+ParseOpts ()
+
+#
+# Snarf changesets.
+#
+print 'Grabbing changesets...\r',
+sys.stdout.flush ()
+
+printcount = CSCount = 0
+while (1):
+    if (printcount % 50) == 0:
+        print 'Grabbing changesets...%d\r' % printcount,
+        sys.stdout.flush ()
+    printcount += 1
+    p = grabpatch()
+    if not p:
+        break
+    if p.added > 100000 or p.removed > 100000:
+        print 'Skipping massive add'
+        continue
+    if FileFilter and p.added == 0 and p.removed == 0:
+        continue
+    if not p.merge:
+        p.author.addpatch (p)
+        for sobemail, sob in p.sobs:
+            sob.addsob (p)
+    CSCount += 1
+print 'Grabbing changesets...done'
+
+if DumpDB:
+    database.DumpDB ()
+#
+# Say something
+#
+hlist = database.AllHackers ()
+elist = database.AllEmployers ()
+Outfile.write ('Processed %d csets from %d developers\n' % (CSCount,
+                                                            len (hlist)))
+Outfile.write ('%d employers found\n' % len (elist))
+Outfile.write ('A total of %d lines added, %d removed (delta %d)\n' %
+               (TotalAdded, TotalRemoved, TotalAdded - TotalRemoved))
+if TotalChanged == 0:
+    TotalChanged = 1 # HACK to avoid div by zero
+if DateStats:
+    PrintDateStats ()
+    sys.exit(0)
+
+if DevReports:
+    ReportByPCount (hlist)
+    ReportByLChanged (hlist)
+    ReportByLRemoved (hlist)
+    ReportBySOBs (hlist)
+ReportByPCEmpl (elist)
+ReportByELChanged (elist)
+ReportByESOBs (elist)
