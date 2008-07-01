@@ -163,7 +163,6 @@ def AddEmailEmployerMapping (email, employer, end = nextyear):
     empl = GetEmployer (employer)
     try:
         l = EmailToEmployer[email]
-        print email, l
         for i in range (0, len(l)):
             date, xempl = l[i]
             if date == end:  # probably both nextyear
