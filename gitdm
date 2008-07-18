@@ -14,21 +14,7 @@
 import database, ConfigFile
 import getopt, datetime
 import os, re, sys, rfc822, string
-
-#
-# Some people, when confronted with a problem, think "I know, I'll use regular
-# expressions." Now they have two problems.
-#    -- Jamie Zawinski
-#
-Pcommit = re.compile (r'^commit ([0-9a-f]+)$')
-Pauthor = re.compile (r'^Author: ([^<]+)\s<([^>]+)>$')
-Psob = re.compile (r'Signed-off-by:\s+([^<]+)\s+<([^>]+)>')
-Pmerge = re.compile (r'^Merge:.*$')
-Padd = re.compile (r'^\+[^\+].*$')
-Prem = re.compile (r'^-[^-].*$')
-Pdate = re.compile (r'^(Commit)?Date:\s+(.*)$')
-Pfilea = re.compile (r'^---\s+(.*)$')
-Pfileb = re.compile (r'^\+\+\+\s+(.*)$')
+from patterns import *
 
 class patch:
     pass
@@ -117,7 +103,6 @@ def AddDateLines(date, lines):
     if lines > 1000000:
         print 'Skip big patch (%d)' % lines
         return
-    dt = (date.year, date.month, date.day)
     try:
         DateMap[date] += lines
     except KeyError:
@@ -130,7 +115,7 @@ def PrintDateStats():
     datef = open ('datelc', 'w')
     for date in dates:
         total += DateMap[date]
-        datef.write ('%d/%02d/%02d %6d %7d\n' % (date[0], date[1], date[2],
+        datef.write ('%d/%02d/%02d %6d %7d\n' % (date.year, date.month, date.day,
                                     DateMap[date], total))
 
 #
