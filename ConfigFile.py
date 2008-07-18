@@ -1,6 +1,15 @@
 #
 # Stuff for dealing with configuration files.
 #
+#
+# This code is part of the LWN git data miner.
+#
+# Copyright 2007-8 LWN.net
+# Copyright 2007-8 Jonathan Corbet <corbet@lwn.net>
+#
+# This file may be distributed under the terms of the GNU General
+# Public License, version 2.
+#
 import sys, re, datetime
 import database
 
