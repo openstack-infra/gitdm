@@ -53,7 +53,7 @@ def ParseOpts ():
     global DateStats, AuthorSOBs, FileFilter, AkpmOverLt, DumpDB
     global CFName
 
-    opts, rest = getopt.getopt (sys.argv[1:], 'adDh:l:o:r:suz')
+    opts, rest = getopt.getopt (sys.argv[1:], 'adc:Dh:l:o:r:suz')
     for opt in opts:
         if opt[0] == '-a':
             AkpmOverLt = 1
