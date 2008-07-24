@@ -412,9 +412,8 @@ def ReportByESOBs (elist):
     EndReport ()
 
 #
-# Here starts the real program.  Read the config files.
+# Here starts the real program.
 #
-ConfigFile.ConfigFile (CFName)
 
 #
 # Let's pre-seed the database with a couple of hackers
@@ -428,6 +427,11 @@ Akpm = ('akpm@linux-foundation.org',
 NextLine = sys.stdin.readline ()
 TotalChanged = TotalAdded = TotalRemoved = 0
 ParseOpts ()
+
+#
+# Read the config files.
+#
+ConfigFile.ConfigFile (CFName)
 
 #
 # Snarf changesets.
