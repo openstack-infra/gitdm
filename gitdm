@@ -19,7 +19,7 @@ from patterns import *
 class patch:
     pass
 
-
+Today = datetime.date.today()
 #
 # Control options.
 #
@@ -181,6 +181,9 @@ def grabpatch():
         if m:
             dt = rfc822.parsedate(m.group (2))
             p.date = datetime.date (dt[0], dt[1], dt[2])
+            if p.date > Today:
+                sys.stderr.write ('Funky date: %s\n' % p.date)
+                p.date = Today
             continue
         #
         # If we have a file filter, check for file lines.
