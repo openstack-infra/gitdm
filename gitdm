@@ -11,7 +11,7 @@
 # Public License, version 2.
 
 
-import database, ConfigFile
+import database, csv, ConfigFile
 import getopt, datetime
 import os, re, sys, rfc822, string
 from patterns import *
@@ -30,6 +30,7 @@ DevReports = 1
 DateStats = 0
 AuthorSOBs = 1
 FileFilter = None
+CSVFile = None
 AkpmOverLt = 0
 DumpDB = 0
 CFName = 'gitdm.config'
@@ -46,14 +47,15 @@ CFName = 'gitdm.config'
 # -r pattern	Restrict to files matching pattern
 # -s		Ignore author SOB lines
 # -u		Map unknown employers to '(Unknown)'
+# -x file.csv   Export raw statistics as CSV
 # -z		Dump out the hacker database at completion
 
 def ParseOpts ():
     global Outfile, ListCount, MapUnknown, HTMLfile, DevReports
     global DateStats, AuthorSOBs, FileFilter, AkpmOverLt, DumpDB
-    global CFName
+    global CFName, CSVFile
 
-    opts, rest = getopt.getopt (sys.argv[1:], 'adc:Dh:l:o:r:suz')
+    opts, rest = getopt.getopt (sys.argv[1:], 'adc:Dh:l:o:r:sux:z')
     for opt in opts:
         if opt[0] == '-a':
             AkpmOverLt = 1
@@ -76,6 +78,9 @@ def ParseOpts ():
             AuthorSOBs = 0
         elif opt[0] == '-u':
             MapUnknown = 1
+        elif opt[0] == '-x':
+            CSVFile = open (opt[1], 'w')
+            print "open output file " + opt[1] + "\n"
         elif opt[0] == '-z':
             DumpDB = 1
         
@@ -259,7 +264,6 @@ THead = '''<p>
 <table cellspacing=3>
 <tr><th colspan=3>%s</th></tr>
 '''
-
 
 def BeginReport (title):
     global HTMLclass
@@ -459,6 +463,7 @@ while (1):
         for sobemail, sob in p.sobs:
             sob.addsob (p)
     CSCount += 1
+    csv.AccumulatePatch (p)
 print >> sys.stderr, 'Grabbing changesets...done'
 
 if DumpDB:
@@ -478,6 +483,10 @@ if TotalChanged == 0:
 if DateStats:
     PrintDateStats ()
     sys.exit(0)
+
+csv.OutputCSV (CSVFile)
+if CSVFile is not None:
+        CSVFile.close ()
 
 if DevReports:
     ReportByPCount (hlist)
