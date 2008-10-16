@@ -46,7 +46,7 @@ def ReadEmailAliases (name):
         sline = line.split ()
         if len (sline) != 2:
             croak ('Funky email alias line "%s"' % (line))
-        if sline[0].index ('@') <= 0 or sline[1].index ('@') <= 0:
+        if sline[0].find ('@') <= 0 or sline[1].find ('@') <= 0:
             croak ('Non-addresses in email alias "%s"' % (line))
         database.AddEmailAlias (sline[0], sline[1])
         line = ReadConfigLine (file)
