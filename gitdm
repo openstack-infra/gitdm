@@ -11,20 +11,15 @@
 # Public License, version 2.
 
 
-import database, csv, ConfigFile
+import database, csv, ConfigFile, reports
 import getopt, datetime
 import os, re, sys, rfc822, string
 from patterns import *
-
-class patch:
-    pass
 
 Today = datetime.date.today()
 #
 # Control options.
 #
-Outfile = sys.stdout
-ListCount = 999999
 MapUnknown = 0
 DevReports = 1
 DateStats = 0
@@ -51,7 +46,7 @@ CFName = 'gitdm.config'
 # -z		Dump out the hacker database at completion
 
 def ParseOpts ():
-    global Outfile, ListCount, MapUnknown, HTMLfile, DevReports
+    global MapUnknown, DevReports
     global DateStats, AuthorSOBs, FileFilter, AkpmOverLt, DumpDB
     global CFName, CSVFile
 
@@ -66,11 +61,11 @@ def ParseOpts ():
         elif opt[0] == '-D':
             DateStats = 1
         elif opt[0] == '-h':
-            HTMLfile = open (opt[1], 'w')
+            reports.SetHTMLOutput (open (opt[1], 'w'))
         elif opt[0] == '-l':
-            ListCount = int (opt[1])
+            reports.SetMaxList (int (opt[1]))
         elif opt[0] == '-o':
-            Outfile = open (opt[1], 'w')
+            reports.SetOutput (open (opt[1], 'w'))
         elif opt[0] == '-r':
             print 'Filter on "%s"' % (opt[1])
             FileFilter = re.compile (opt[1])
@@ -123,6 +118,29 @@ def PrintDateStats():
         datef.write ('%d/%02d/%02d %6d %7d\n' % (date.year, date.month, date.day,
                                     DateMap[date], total))
 
+
+#
+# Let's slowly try to move some smarts into this class.
+#
+class patch:
+    def __init__ (self, commit):
+        self.commit = commit
+        self.merge = self.added = self.removed = 0
+        self.author = LookupStoreHacker('Unknown hacker', 'unknown@hacker.net')
+        self.email = 'unknown@hacker.net'
+        self.sobs = [ ]
+        self.reviews = [ ]
+        self.testers = [ ]
+        self.reports = [ ]
+
+    def addreviewer (self, reviewer):
+        self.reviews.append (reviewer)
+
+    def addtester (self, tester):
+        self.testers.append (tester)
+
+    def addreporter (self, reporter):
+        self.reports.append (reporter)
 #
 # The core hack for grabbing the information about a changeset.
 #
@@ -137,12 +155,7 @@ def grabpatch():
         if not NextLine:
             return
 
-    p = patch()
-    p.commit = m.group (1)
-    p.merge = p.added = p.removed = 0
-    p.author = LookupStoreHacker('Unknown hacker', 'unknown@hacker.net')
-    p.email = 'unknown@hacker.net'
-    p.sobs = [ ]
+    p = patch(m.group (1))
     NextLine = sys.stdin.readline ()
     ignore = (FileFilter is not None)
     while NextLine:
@@ -171,6 +184,35 @@ def grabpatch():
             sobber = LookupStoreHacker(m.group (1), email)
             if sobber != p.author or AuthorSOBs:
                 p.sobs.append ((email, LookupStoreHacker(m.group (1), m.group (2))))
+            continue
+        #
+        # Various other tags of interest.
+        #
+        m = Preview.search (Line)  # Reviewed-by:
+        if m:
+            email = database.RemapEmail (m.group (2))
+            p.addreviewer (LookupStoreHacker(m.group (1), email))
+            continue
+        m = Ptest.search (Line)    # Tested-by:
+        if m:
+            email = database.RemapEmail (m.group (2))
+            p.addtester (LookupStoreHacker (m.group (1), email))
+            p.author.testcredit (patch)
+            continue
+        m = Prep.search (Line)     # Reported-by:
+        if m:
+            email = database.RemapEmail (m.group (2))
+            p.addreporter (LookupStoreHacker (m.group (1), email))
+            p.author.reportcredit (patch)
+            continue
+        m = Preptest.search (Line)  # Reported-and-tested-by:
+        if m:
+            email = database.RemapEmail (m.group (2))
+            h = LookupStoreHacker (m.group (1), email)
+            p.addreporter (h)
+            p.addtester (h)
+            p.author.reportcredit (patch)
+            p.author.testcredit (patch)
             continue
         #
         # If this one is a merge, make note of the fact.
@@ -253,170 +295,6 @@ def TrimLTSOBs (p):
     if Linus in p.sobs and Akpm in p.sobs:
         p.sobs.remove (Linus)
 
-#
-# HTML output support stuff.
-#
-HTMLfile = None
-HTMLclass = 0
-HClasses = ['Even', 'Odd']
-
-THead = '''<p>
-<table cellspacing=3>
-<tr><th colspan=3>%s</th></tr>
-'''
-
-def BeginReport (title):
-    global HTMLclass
-    
-    Outfile.write ('\n%s\n' % title)
-    if HTMLfile:
-        HTMLfile.write (THead % title)
-        HTMLclass = 0
-
-TRow = '''    <tr class="%s">
-<td>%s</td><td align="right">%d</td><td align="right">%.1f%%</td></tr>
-'''
-
-def ReportLine (text, count, pct):
-    global HTMLclass
-    if count == 0:
-        return
-    Outfile.write ('%-25s %4d (%.1f%%)\n' % (text, count, pct))
-    if HTMLfile:
-        HTMLfile.write (TRow % (HClasses[HTMLclass], text, count, pct))
-        HTMLclass ^= 1
-
-def EndReport ():
-    if HTMLfile:
-        HTMLfile.write ('</table>\n\n')
-        
-#
-# Comparison and report generation functions.
-#
-def ComparePCount (h1, h2):
-    return len (h2.patches) - len (h1.patches)
-
-def ReportByPCount (hlist):
-    hlist.sort (ComparePCount)
-    count = 0
-    BeginReport ('Developers with the most changesets')
-    for h in hlist:
-        pcount = len (h.patches)
-        changed = max(h.added, h.removed)
-        delta = h.added - h.removed
-        if pcount > 0:
-            ReportLine (h.name, pcount, (pcount*100.0)/CSCount)
-        count += 1
-        if count >= ListCount:
-            break
-    EndReport ()
-            
-def CompareLChanged (h1, h2):
-    return max(h2.added, h2.removed) - max(h1.added, h1.removed)
-
-def ReportByLChanged (hlist):
-    hlist.sort (CompareLChanged)
-    count = 0
-    BeginReport ('Developers with the most changed lines')
-    for h in hlist:
-        pcount = len (h.patches)
-        changed = max(h.added, h.removed)
-        delta = h.added - h.removed
-        if (h.added + h.removed) > 0:
-            ReportLine (h.name, changed, (changed*100.0)/TotalChanged)
-        count += 1
-        if count >= ListCount:
-            break
-    EndReport ()
-            
-def CompareLRemoved (h1, h2):
-    return (h2.removed - h2.added) - (h1.removed - h1.added)
-
-def ReportByLRemoved (hlist):
-    hlist.sort (CompareLRemoved)
-    count = 0
-    BeginReport ('Developers with the most lines removed')
-    for h in hlist:
-        pcount = len (h.patches)
-        changed = max(h.added, h.removed)
-        delta = h.added - h.removed
-        if delta < 0:
-            ReportLine (h.name, -delta, (-delta*100.0)/TotalRemoved)
-        count += 1
-        if count >= ListCount:
-            break
-    EndReport ()
-
-def CompareEPCount (e1, e2):
-    return e2.count - e1.count
-
-def ReportByPCEmpl (elist):
-    elist.sort (CompareEPCount)
-    count = 0
-    BeginReport ('Top changeset contributors by employer')
-    for e in elist:
-        if e.count != 0:
-            ReportLine (e.name, e.count, (e.count*100.0)/CSCount)
-        count += 1
-        if count >= ListCount:
-            break
-    EndReport ()
-
-
-
-def CompareELChanged (e1, e2):
-    return e2.changed - e1.changed
-
-def ReportByELChanged (elist):
-    elist.sort (CompareELChanged)
-    count = 0
-    BeginReport ('Top lines changed by employer')
-    for e in elist:
-        if e.changed != 0:
-            ReportLine (e.name, e.changed, (e.changed*100.0)/TotalChanged)
-        count += 1
-        if count >= ListCount:
-            break
-    EndReport ()
-
-
-
-def CompareSOBs (h1, h2):
-    return len (h2.signoffs) - len (h1.signoffs)
-
-def ReportBySOBs (hlist):
-    hlist.sort (CompareSOBs)
-    totalsobs = 0
-    for h in hlist:
-        totalsobs += len (h.signoffs)
-    count = 0
-    BeginReport ('Developers with the most signoffs (total %d)' % totalsobs)
-    for h in hlist:
-        scount = len (h.signoffs)
-        if scount > 0:
-            ReportLine (h.name, scount, (scount*100.0)/totalsobs)
-        count += 1
-        if count >= ListCount:
-            break
-    EndReport ()
-
-def CompareESOBs (e1, e2):
-    return e2.sobs - e1.sobs
-
-def ReportByESOBs (elist):
-    elist.sort (CompareESOBs)
-    totalsobs = 0
-    for e in elist:
-        totalsobs += e.sobs
-    count = 0
-    BeginReport ('Employers with the most signoffs (total %d)' % totalsobs)
-    for e in elist:
-        if e.sobs > 0:
-            ReportLine (e.name, e.sobs, (e.sobs*100.0)/totalsobs)
-        count += 1
-        if count >= ListCount:
-            break
-    EndReport ()
 
 #
 # Here starts the real program.
@@ -453,15 +331,21 @@ while (1):
     p = grabpatch()
     if not p:
         break
-    if p.added > 100000 or p.removed > 100000:
-        print 'Skipping massive add'
-        continue
+#    if p.added > 100000 or p.removed > 100000:
+#        print 'Skipping massive add', p.commit
+#        continue
     if FileFilter and p.added == 0 and p.removed == 0:
         continue
     if not p.merge:
         p.author.addpatch (p)
         for sobemail, sob in p.sobs:
             sob.addsob (p)
+        for hacker in p.reviews:
+            hacker.addreview (p)
+        for hacker in p.testers:
+            hacker.addtested (p)
+        for hacker in p.reports:
+            hacker.addreport (p)
     CSCount += 1
     csv.AccumulatePatch (p)
 print >> sys.stderr, 'Grabbing changesets...done'
@@ -473,10 +357,10 @@ if DumpDB:
 #
 hlist = database.AllHackers ()
 elist = database.AllEmployers ()
-Outfile.write ('Processed %d csets from %d developers\n' % (CSCount,
+reports.Write ('Processed %d csets from %d developers\n' % (CSCount,
                                                             len (hlist)))
-Outfile.write ('%d employers found\n' % len (elist))
-Outfile.write ('A total of %d lines added, %d removed (delta %d)\n' %
+reports.Write ('%d employers found\n' % len (elist))
+reports.Write ('A total of %d lines added, %d removed (delta %d)\n' %
                (TotalAdded, TotalRemoved, TotalAdded - TotalRemoved))
 if TotalChanged == 0:
     TotalChanged = 1 # HACK to avoid div by zero
@@ -489,10 +373,5 @@ if CSVFile is not None:
         CSVFile.close ()
 
 if DevReports:
-    ReportByPCount (hlist)
-    ReportByLChanged (hlist)
-    ReportByLRemoved (hlist)
-    ReportBySOBs (hlist)
-ReportByPCEmpl (elist)
-ReportByELChanged (elist)
-ReportByESOBs (elist)
+    reports.DevReports (hlist, TotalChanged, CSCount, TotalRemoved)
+reports.EmplReports (elist, TotalChanged, CSCount)

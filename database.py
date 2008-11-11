@@ -21,6 +21,10 @@ class Hacker:
         self.added = self.removed = 0
         self.patches = [ ]
         self.signoffs = [ ]
+        self.reviews = [ ]
+        self.tested = [ ]
+        self.reports = [ ]
+        self.testcred = self.repcred = 0
 
     def addemail (self, email, elist):
         self.email.append (email)
@@ -41,8 +45,22 @@ class Hacker:
         self.removed += patch.removed
         self.patches.append (patch)
 
+    #
+    # There's got to be a better way.
+    #
     def addsob (self, patch):
         self.signoffs.append (patch)
+    def addreview (self, patch):
+        self.reviews.append (patch)
+    def addtested (self, patch):
+        self.tested.append (patch)
+    def addreport (self, patch):
+        self.reports.append (patch)
+
+    def reportcredit (self, patch):
+        self.repcred += 1
+    def testcredit (self, patch):
+        self.testcred += 1
 
 HackersByName = { }
 HackersByEmail = { }
