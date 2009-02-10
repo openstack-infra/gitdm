@@ -33,6 +33,6 @@ Preptest = re.compile (r'reported-and-tested-by:' + Pemail, re.I)
 #
 # Merges are described with a variety of lines.
 #
-PExtMerge = re.compile(r'^ +Merge( branch .* of)? ([^ ]+)\n$')
+PExtMerge = re.compile(r'^ +Merge( branch .* of)? ([^ ]+:[^ ]+)\n$')
 PIntMerge = re.compile(r'^ +(Merge|Pull) .* into .*$')
 PIntMerge2 = re.compile(r"^ +Merge branch(es)? '.*$")
