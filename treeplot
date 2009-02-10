@@ -204,8 +204,12 @@ class FlowNode:
 
 def BuildFlowTree():
     rootnode = FlowNode(Mainline)
+    notree = Tree('[No tree]', '')
     for centry in CommitTrees.values():
-        FillFlowPath(centry.path, rootnode)
+        path = centry.path
+        if not path:
+            path = [ notree ]
+        FillFlowPath(path, rootnode)
     return rootnode
 
 def FillFlowPath(path, node):
@@ -221,7 +225,9 @@ def FillFlowPath(path, node):
 
 def PrintFlowTree(ftree, indent = ''):
     print '%s%3d %s' % (indent, ftree.commits, ftree.tree.name)
-    for input in ftree.inputs.values():
+    inputs = ftree.inputs.values()
+    inputs.sort(GVSort)
+    for input in inputs:
         PrintFlowTree(input, indent + '  ')
 
 #
