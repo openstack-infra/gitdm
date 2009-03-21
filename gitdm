@@ -357,9 +357,16 @@ if DumpDB:
 #
 hlist = database.AllHackers ()
 elist = database.AllEmployers ()
+ndev = nempl = 0
+for h in hlist:
+    if max (h.added, h.removed) > 0:
+        ndev += 1
+for e in elist:
+    if e.count > 0:
+        nempl += 1
 reports.Write ('Processed %d csets from %d developers\n' % (CSCount,
-                                                            len (hlist)))
-reports.Write ('%d employers found\n' % len (elist))
+                                                            ndev))
+reports.Write ('%d employers found\n' % (nempl))
 reports.Write ('A total of %d lines added, %d removed (delta %d)\n' %
                (TotalAdded, TotalRemoved, TotalAdded - TotalRemoved))
 if TotalChanged == 0:
