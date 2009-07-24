@@ -363,7 +363,7 @@ hlist = database.AllHackers ()
 elist = database.AllEmployers ()
 ndev = nempl = 0
 for h in hlist:
-    if max (h.added, h.removed) > 0:
+    if len (h.patches) > 0:
         ndev += 1
 for e in elist:
     if e.count > 0:
