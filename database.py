@@ -192,7 +192,8 @@ def AddEmailEmployerMapping (email, employer, end = nextyear):
         EmailToEmployer[email] = [(end, empl)]
 
 def MapToEmployer (email, unknown = 0):
-    email = email.lower ()
+    # Somebody sometimes does s/@/ at /; let's fix it.
+    email = email.lower ().replace (' at ', '@')
     try:
         return EmailToEmployer[email]
     except KeyError:
