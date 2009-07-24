@@ -245,7 +245,11 @@ def grabpatch():
                 p.added += 1
                 continue
             if Prem.match (Line):
-                p.removed += 1        
+                p.removed += 1
+
+    if '@' in p.author.name:
+        print '%s is an author name, probably not what you want' % p.author.name
+
     #
     # Record some global information - but only if this patch had
     # stuff which wasn't ignored.  This work should be done
