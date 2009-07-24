@@ -348,7 +348,7 @@ while (1):
             hacker.addreport (p)
     CSCount += 1
     csv.AccumulatePatch (p)
-print >> sys.stderr, 'Grabbing changesets...done'
+print >> sys.stderr, 'Grabbing changesets...done       '
 
 if DumpDB:
     database.DumpDB ()
