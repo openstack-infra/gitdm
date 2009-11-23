@@ -102,7 +102,7 @@ def ConfigFile (name):
         croak ('Unable to open config file %s' % (name))
     line = ReadConfigLine (file)
     while line:
-        sline = line.split ()
+        sline = line.split (None, 2)
         if len (sline) < 2:
             croak ('Funky config line: "%s"' % (line))
         if sline[0] == 'EmailAliases':
