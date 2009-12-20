@@ -145,7 +145,7 @@ class patch:
 # The core hack for grabbing the information about a changeset.
 #
 def grabpatch():
-    global NextLine, TotalAdded, TotalRemoved, TotalChanged
+    global NextLine
     
     while (1):
         m = Pcommit.match (NextLine)
@@ -250,23 +250,6 @@ def grabpatch():
     if '@' in p.author.name:
         print '%s is an author name, probably not what you want' % p.author.name
 
-    #
-    # Record some global information - but only if this patch had
-    # stuff which wasn't ignored.  This work should be done
-    # elsewhere,
-    #
-    if ((p.added + p.removed) > 0 or not FileFilter) and not p.merge:
-        TotalAdded += p.added
-        TotalRemoved += p.removed
-        TotalChanged += max (p.added, p.removed)
-        AddDateLines (p.date, max (p.added, p.removed))
-        empl = p.author.emailemployer (p.email, p.date)
-        empl.AddCSet (p)
-        if AkpmOverLt:
-            TrimLTSOBs (p)
-        for sobemail, sobber in p.sobs:
-            empl = sobber.emailemployer (sobemail, p.date)
-            empl.AddSOB()
     return p
 
 
@@ -340,6 +323,24 @@ while (1):
 #        continue
     if FileFilter and p.added == 0 and p.removed == 0:
         continue
+
+    #
+    # Record some global information - but only if this patch had
+    # stuff which wasn't ignored.
+    #
+    if ((p.added + p.removed) > 0 or not FileFilter) and not p.merge:
+        TotalAdded += p.added
+        TotalRemoved += p.removed
+        TotalChanged += max (p.added, p.removed)
+        AddDateLines (p.date, max (p.added, p.removed))
+        empl = p.author.emailemployer (p.email, p.date)
+        empl.AddCSet (p)
+        if AkpmOverLt:
+            TrimLTSOBs (p)
+        for sobemail, sobber in p.sobs:
+            empl = sobber.emailemployer (sobemail, p.date)
+            empl.AddSOB()
+
     if not p.merge:
         p.author.addpatch (p)
         for sobemail, sob in p.sobs:
