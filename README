@@ -91,6 +91,33 @@ GroupMap file employer
 	email addresses only, all of which are associated with the given
 	employer.
 
+OTHER TOOLS
+
+A few other tools have been added to this repository:
+
+  treeplot
+	Reads a set of commits, then generates a graphviz file charting the
+	flow of patches into the mainline.  Needs to be smarter, but, then,
+	so does everything else in this directory.
+
+  findoldfiles
+	Simple brute-force crawler which outputs the names of any files
+	which have not been touched since the original (kernel) commit.
+
+  committags
+	I needed to be able to quickly associate a given commit with the
+	major release which contains it.  First attempt used 
+	"git tags --contains="; after it ran for a solid week, I concluded
+	there must be a better way.  This tool just reads through the repo,
+	remembering tags, and creating a Python dictionary containing the
+	association.  The result is an ugly 10mb pickle file, but, even so,
+	it's still a better way.
+
+  linetags
+	Crawls through a directory hierarchy, counting how many lines of
+	code are associated with each major release.  Needs the pickle file
+	from committags to get the job done.
+
 
 NOTES AND CREDITS
 
