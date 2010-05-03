@@ -17,6 +17,12 @@ import os, re, sys, rfc822, string
 from patterns import *
 
 Today = datetime.date.today()
+
+#
+# Remember author names we have griped about.
+#
+GripedAuthorNames = [ ]
+
 #
 # Control options.
 #
@@ -248,10 +254,15 @@ def grabpatch():
                 p.removed += 1
 
     if '@' in p.author.name:
-        print '%s is an author name, probably not what you want' % p.author.name
+        GripeAboutAuthorName (p.author.name)
 
     return p
 
+def GripeAboutAuthorName (name):
+    if name in GripedAuthorNames:
+        return
+    GripedAuthorNames.append (name)
+    print '%s is an author name, probably not what you want' % (name)
 
 def ApplyFileFilter (line, ignore):
     #
