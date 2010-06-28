@@ -2,6 +2,18 @@ The code in this directory makes up the "git data miner," a simple hack
 which attempts to figure things out from the revision history in a git
 repository. 
 
+
+INSTALLING GITDM
+
+gitdm is a python script and doesn't need to be proper installed like other
+normal programs. You just have to adjust your PATH variable, pointing it to
+the directory of gitdm or alternatively create a symbolic link of the script
+inside /usr/bin.
+
+Before actually run gitdm you may want also to update the configuration file
+(gitdm.config) with the needed information.
+
+
 RUNNING GITDM
 
 Run it like this:
