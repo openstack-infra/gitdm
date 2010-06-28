@@ -33,8 +33,10 @@ be:
          	only. 
 
 	-D	Rather than create the usual statistics, create a 
-		file providing lines changed per day, suitable for
-		feeding to a tool like gnuplot.
+        file (datelc) providing lines changed per day, where the first column
+        displays the changes happened only on that day and the second sums
+        the day it happnened with the previous ones. This option is suitable
+        for feeding to a tool like gnuplot.
 
 	-h file	Generate HTML output to the given file
 
