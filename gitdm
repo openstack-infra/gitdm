@@ -35,10 +35,13 @@ CSVFile = None
 AkpmOverLt = 0
 DumpDB = 0
 CFName = 'gitdm.config'
+DirName = ''
+
 #
 # Options:
 #
 # -a		Andrew Morton's signoffs shadow Linus's
+# -b dir	Specify the base directory to fetch the configuration files
 # -c cfile	Specify a configuration file
 # -d		Output individual developer stats
 # -D		Output date statistics
@@ -54,12 +57,14 @@ CFName = 'gitdm.config'
 def ParseOpts ():
     global MapUnknown, DevReports
     global DateStats, AuthorSOBs, FileFilter, AkpmOverLt, DumpDB
-    global CFName, CSVFile
+    global CFName, CSVFile, DirName
 
-    opts, rest = getopt.getopt (sys.argv[1:], 'adc:Dh:l:o:r:sux:z')
+    opts, rest = getopt.getopt (sys.argv[1:], 'ab:dc:Dh:l:o:r:sux:z')
     for opt in opts:
         if opt[0] == '-a':
             AkpmOverLt = 1
+        elif opt[0] == '-b':
+            DirName = opt[1]
         elif opt[0] == '-c':
             CFName = opt[1]
         elif opt[0] == '-d':
@@ -302,7 +307,7 @@ ParseOpts ()
 #
 # Read the config files.
 #
-ConfigFile.ConfigFile (CFName)
+ConfigFile.ConfigFile (CFName, DirName)
 
 #
 # Let's pre-seed the database with a couple of hackers

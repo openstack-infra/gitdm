@@ -95,7 +95,8 @@ def ReadGroupMap (fname, employer):
 #
 # Read an overall config file.
 #
-def ConfigFile (name):
+
+def ConfigFile (name, confdir):
     try:
         file = open (name, 'r')
     except IOError:
@@ -106,13 +107,13 @@ def ConfigFile (name):
         if len (sline) < 2:
             croak ('Funky config line: "%s"' % (line))
         if sline[0] == 'EmailAliases':
-            ReadEmailAliases (sline[1])
+            ReadEmailAliases (confdir + sline[1])
         elif sline[0] == 'EmailMap':
-            ReadEmailEmployers (sline[1])
+            ReadEmailEmployers (confdir + sline[1])
         elif sline[0] == 'GroupMap':
             if len (sline) != 3:
                 croak ('Funky group map line "%s"' % (line))
-            ReadGroupMap (sline[1], sline[2])
+            ReadGroupMap (confdir + sline[1], sline[2])
         else:
             croak ('Unrecognized config line: "%s"' % (line))
         line = ReadConfigLine (file)

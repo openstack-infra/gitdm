@@ -26,6 +26,8 @@ be:
 	-a	If a patch contains signoff lines from both Andrew Morton 
 		and Linus Torvalds, omit Linus's.
 
+	-b dir	Specify the base directory to fetch the configuration files.
+
 	-c file Specify the name of the gitdm configuration file.  
 	   	By default, "./gitdm.config" is used.
 
