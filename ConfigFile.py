@@ -4,13 +4,13 @@
 #
 # This code is part of the LWN git data miner.
 #
-# Copyright 2007-8 LWN.net
-# Copyright 2007-8 Jonathan Corbet <corbet@lwn.net>
+# Copyright 2007-10 LWN.net
+# Copyright 2007-10 Jonathan Corbet <corbet@lwn.net>
 #
 # This file may be distributed under the terms of the GNU General
 # Public License, version 2.
 #
-import sys, re, datetime
+import sys, re, datetime, os.path
 import database
 
 #
@@ -107,13 +107,13 @@ def ConfigFile (name, confdir):
         if len (sline) < 2:
             croak ('Funky config line: "%s"' % (line))
         if sline[0] == 'EmailAliases':
-            ReadEmailAliases (confdir + sline[1])
+            ReadEmailAliases (os.path.join (confdir, sline[1]))
         elif sline[0] == 'EmailMap':
-            ReadEmailEmployers (confdir + sline[1])
+            ReadEmailEmployers (os.path.join (confdir, sline[1]))
         elif sline[0] == 'GroupMap':
             if len (sline) != 3:
                 croak ('Funky group map line "%s"' % (line))
-            ReadGroupMap (confdir + sline[1], sline[2])
+            ReadGroupMap (os.path.join (confdir, sline[1]), sline[2])
         else:
             croak ('Unrecognized config line: "%s"' % (line))
         line = ReadConfigLine (file)
