@@ -189,7 +189,7 @@ def grabpatch():
         #
         # Could be a signed-off-by:
         #
-        m = Psob.search (Line)
+        m = Psob.match (Line)
         if m:
             email = database.RemapEmail (m.group (2))
             sobber = LookupStoreHacker(m.group (1), email)
@@ -199,24 +199,24 @@ def grabpatch():
         #
         # Various other tags of interest.
         #
-        m = Preview.search (Line)  # Reviewed-by:
+        m = Preview.match (Line)  # Reviewed-by:
         if m:
             email = database.RemapEmail (m.group (2))
             p.addreviewer (LookupStoreHacker(m.group (1), email))
             continue
-        m = Ptest.search (Line)    # Tested-by:
+        m = Ptest.match (Line)    # Tested-by:
         if m:
             email = database.RemapEmail (m.group (2))
             p.addtester (LookupStoreHacker (m.group (1), email))
             p.author.testcredit (patch)
             continue
-        m = Prep.search (Line)     # Reported-by:
+        m = Prep.match (Line)     # Reported-by:
         if m:
             email = database.RemapEmail (m.group (2))
             p.addreporter (LookupStoreHacker (m.group (1), email))
             p.author.reportcredit (patch)
             continue
-        m = Preptest.search (Line)  # Reported-and-tested-by:
+        m = Preptest.match (Line)  # Reported-and-tested-by:
         if m:
             email = database.RemapEmail (m.group (2))
             h = LookupStoreHacker (m.group (1), email)
