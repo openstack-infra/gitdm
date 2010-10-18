@@ -136,7 +136,6 @@ def ReportByPCEmpl (elist, cscount):
     EndReport ()
 
 
-
 def CompareELChanged (e1, e2):
     return e2.changed - e1.changed
 
@@ -296,6 +295,25 @@ def ReportByESOBs (elist):
         if count >= ListCount:
             break
     EndReport ()
+   
+def CompareHackers (e1, e2):
+    return len (e2.hackers) - len (e1.hackers)
+
+def ReportByEHackers (elist):
+    elist.sort (CompareHackers)
+    totalhackers = 0
+    for e in elist:
+        totalhackers += len (e.hackers)
+    count = 0
+    BeginReport ('Employers with the most hackers (total %d)' % totalhackers)
+    for e in elist:
+        nhackers = len (e.hackers)
+        if nhackers > 0:
+            ReportLine (e.name, nhackers, (nhackers*100.0)/totalhackers)
+        count += 1
+        if count >= ListCount:
+            break
+    EndReport ()
 
 
 def DevReports (hlist, totalchanged, cscount, totalremoved):
@@ -313,4 +331,5 @@ def EmplReports (elist, totalchanged, cscount):
     ReportByPCEmpl (elist, cscount)
     ReportByELChanged (elist, totalchanged)
     ReportByESOBs (elist)
+    ReportByEHackers (elist)
     
