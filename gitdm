@@ -295,7 +295,7 @@ def ApplyFileFilter (line, ignore):
 # remove the (redundant) Linus signoff.
 #
 def TrimLTSOBs (p):
-    if Linus in p.sobs and Akpm in p.sobs:
+    if AkpmOverLt == 1 and Linus in p.sobs and Akpm in p.sobs:
         p.sobs.remove (Linus)
 
 
@@ -313,9 +313,10 @@ ConfigFile.ConfigFile (CFName, DirName)
 # Let's pre-seed the database with a couple of hackers
 # we want to remember.
 #
-Linus = ('torvalds@linux-foundation.org',
+if AkpmOverLt == 1:
+    Linus = ('torvalds@linux-foundation.org',
          LookupStoreHacker ('Linus Torvalds', 'torvalds@linux-foundation.org'))
-Akpm = ('akpm@linux-foundation.org',
+    Akpm = ('akpm@linux-foundation.org',
         LookupStoreHacker ('Andrew Morton', 'akpm@linux-foundation.org'))
 
 NextLine = sys.stdin.readline ()
