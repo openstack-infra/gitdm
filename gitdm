@@ -395,7 +395,6 @@ if TotalChanged == 0:
     TotalChanged = 1 # HACK to avoid div by zero
 if DateStats:
     PrintDateStats ()
-    sys.exit(0)
 
 csv.OutputCSV (CSVFile)
 if CSVFile is not None:
