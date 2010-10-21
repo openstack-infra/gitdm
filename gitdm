@@ -123,10 +123,11 @@ def PrintDateStats():
     dates = DateMap.keys ()
     dates.sort ()
     total = 0
-    datef = open ('datelc', 'w')
+    datef = open ('datelc.csv', 'w')
+    datef.write('Date,Changed,Total Changed\n')
     for date in dates:
         total += DateMap[date]
-        datef.write ('%d/%02d/%02d %6d %7d\n' % (date.year, date.month, date.day,
+        datef.write ('%d/%02d/%02d,%d,%d\n' % (date.year, date.month, date.day,
                                     DateMap[date], total))
 
 
