@@ -43,12 +43,12 @@ def ReadEmailAliases (name):
         croak ('Unable to open email alias file %s' % (name))
     line = ReadConfigLine (file)
     while line:
-        sline = line.split ()
-        if len (sline) != 2:
+        m = re.match ('^("[^"]+"|\S+)\s+(.+)$', line)
+        if not m or len (m.groups ()) != 2:
             croak ('Funky email alias line "%s"' % (line))
-        if sline[0].find ('@') <= 0 or sline[1].find ('@') <= 0:
+        if m and m.group (2).find ('@') <= 0:
             croak ('Non-addresses in email alias "%s"' % (line))
-        database.AddEmailAlias (sline[0], sline[1])
+        database.AddEmailAlias (m.group (1).replace ('"', ''), m.group (2))
         line = ReadConfigLine (file)
     file.close ()
 
