@@ -55,6 +55,11 @@ be:
 	-u 	Group all unknown developers under the "(Unknown)"
  	        employer. 
 
+    -x file  Export raw statistics as CSV.
+
+    -w  Aggregate the data by weeks instead of months in the
+        CSV file when -x is used.
+
 	-z 	Dump out the hacker database to "database.dump".
 
 A typical command line used to generate the "who write 2.6.x" LWN articles

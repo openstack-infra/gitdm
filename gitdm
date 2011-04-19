@@ -36,6 +36,7 @@ AkpmOverLt = 0
 DumpDB = 0
 CFName = 'gitdm.config'
 DirName = ''
+Aggregate = 'month'
 
 #
 # Options:
@@ -52,14 +53,15 @@ DirName = ''
 # -s		Ignore author SOB lines
 # -u		Map unknown employers to '(Unknown)'
 # -x file.csv   Export raw statistics as CSV
+# -w        Aggregrate the raw statistics by weeks instead of months
 # -z		Dump out the hacker database at completion
 
 def ParseOpts ():
     global MapUnknown, DevReports
     global DateStats, AuthorSOBs, FileFilter, AkpmOverLt, DumpDB
-    global CFName, CSVFile, DirName
+    global CFName, CSVFile, DirName, Aggregate
 
-    opts, rest = getopt.getopt (sys.argv[1:], 'ab:dc:Dh:l:o:r:sux:z')
+    opts, rest = getopt.getopt (sys.argv[1:], 'a:b:dc:Dh:l:o:r:suwx:z')
     for opt in opts:
         if opt[0] == '-a':
             AkpmOverLt = 1
@@ -87,6 +89,8 @@ def ParseOpts ():
         elif opt[0] == '-x':
             CSVFile = open (opt[1], 'w')
             print "open output file " + opt[1] + "\n"
+        elif opt [0] == '-w':
+            Aggregate = 'week'
         elif opt[0] == '-z':
             DumpDB = 1
         
@@ -370,7 +374,7 @@ while (1):
         for hacker in p.reports:
             hacker.addreport (p)
     CSCount += 1
-    csv.AccumulatePatch (p)
+    csv.AccumulatePatch (p, Aggregate)
 print >> sys.stderr, 'Grabbing changesets...done       '
 
 if DumpDB:

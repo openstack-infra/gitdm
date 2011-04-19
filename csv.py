@@ -15,8 +15,10 @@ class CSVStat:
 
 PeriodCommitHash = { }
 
-def AccumulatePatch (p):
+def AccumulatePatch (p, Aggregate):
     date = "%.2d-%.2d-01"%(p.date.year, p.date.month)
+    if (Aggregate == 'week'):
+        date = "%.2d-%.2d"%(p.date.isocalendar()[0], p.date.isocalendar()[1])
     authdatekey = "%s-%s"%(p.author.name, date)
     if authdatekey not in PeriodCommitHash:
         empl = p.author.emailemployer (p.email, p.date)
