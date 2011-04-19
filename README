@@ -85,6 +85,15 @@ EmailAliases file
 	Any patches originating from alias@address will be treated as if
 	they had come from canonical@address.
 
+    It may happen that some people set their git user data in the
+    following form: "joe.hacker@acme.org <Joe Hacker>". The 
+    "Joe Hacker" is then considered as the email... but gitdm says
+    it is a "Funky" email. An alias line in the following form can
+    be used to alias these commits aliased to the correct email
+    address:
+
+        "Joe Hacker" joe.hacker@acme.org
+
 
 EmailMap file
 
