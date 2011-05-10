@@ -61,7 +61,7 @@ def ParseOpts ():
     global DateStats, AuthorSOBs, FileFilter, AkpmOverLt, DumpDB
     global CFName, CSVFile, DirName, Aggregate
 
-    opts, rest = getopt.getopt (sys.argv[1:], 'a:b:dc:Dh:l:o:r:suwx:z')
+    opts, rest = getopt.getopt (sys.argv[1:], 'ab:dc:Dh:l:o:r:suwx:z')
     for opt in opts:
         if opt[0] == '-a':
             AkpmOverLt = 1
