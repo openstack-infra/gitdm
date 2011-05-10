@@ -121,6 +121,20 @@ GroupMap file employer
 	email addresses only, all of which are associated with the given
 	employer.
 
+VirtualEmployer name
+    nn% employer1
+    ...
+end
+
+	This construct (which appears in the main configuration file)
+    	allows causes the creation of a fake employer with the given
+    	"name".  It directs that any contributions attributed to that
+    	employer should be split to other (real) employers using the given
+    	percentages.  The functionality works, but is primitive - there is,
+	for example, no check to ensure that the percentages add up to
+    	something rational.
+
+
 OTHER TOOLS
 
 A few other tools have been added to this repository:

@@ -151,6 +151,52 @@ def AllEmployers ():
     return Employers.values ()
 
 #
+# Certain obnoxious developers, who will remain nameless (because we
+# would never want to run afoul of Thomas) want their work split among
+# multiple companies.  Let's try to cope with that.  Let's also hope
+# this doesn't spread.
+#
+class VirtualEmployer (Employer):
+    def __init__ (self, name):
+        Employer.__init__ (self, name)
+        self.splits = [ ]
+
+    def addsplit (self, name, fraction):
+        self.splits.append ((name, fraction))
+
+    #
+    # Go through and (destructively) apply our credits to the
+    # real employer.  Only one level of weirdness is supported.
+    #
+    def applysplits (self):
+        for name, fraction in self.splits:
+            real = GetEmployer (name)
+            real.added += int (self.added*fraction)
+            real.removed += int (self.removed*fraction)
+            real.changed += int (self.changed*fraction)
+            real.count += int (self.count*fraction)
+        self.__init__ (name) # Reset counts just in case
+
+    def store (self):
+        if Employers.has_key (self.name):
+            print Employers[self.name]
+            sys.stderr.write ('WARNING: Virtual empl %s overwrites another\n'
+                              % (self.name))
+        if len (self.splits) == 0:
+            sys.stderr.write ('WARNING: Virtual empl %s has no splits\n'
+                              % (self.name))
+            # Should check that they add up too, but I'm lazy
+        Employers[self.name] = self
+
+#
+# Mix all the virtual employers into their real destinations.
+#
+def MixVirtuals ():
+    for empl in AllEmployers ():
+        if isinstance (empl, VirtualEmployer):
+            empl.applysplits ()
+
+#
 # The email map.
 #
 EmailAliases = { }

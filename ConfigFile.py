@@ -93,6 +93,36 @@ def ReadGroupMap (fname, employer):
     file.close ()
 
 #
+# Read in a virtual employer description.
+#
+def ReadVirtual (file, name):
+    ve = database.VirtualEmployer (name)
+    line = ReadConfigLine (file)
+    while line:
+        sl = line.split (None, 1)
+        first = sl[0]
+        if first == 'end':
+            ve.store ()
+            return
+        #
+        # Zap the "%" syntactic sugar if it's there
+        #
+        if first[-1] == '%':
+            first = first[:-1]
+        try:
+            percent = int (first)
+        except ValueError:
+            croak ('Bad split value "%s" for virtual empl %s' % (first, name))
+        if not (0 < percent <= 100):
+            croak ('Bad split value "%s" for virtual empl %s' % (first, name))
+        ve.addsplit (' '.join (sl[1:]), percent/100.0)
+        line = ReadConfigLine (file)
+    #
+    # We should never get here
+    #
+    croak ('Missing "end" line for virtual employer %s' % (name))
+
+#
 # Read an overall config file.
 #
 
@@ -114,6 +144,8 @@ def ConfigFile (name, confdir):
             if len (sline) != 3:
                 croak ('Funky group map line "%s"' % (line))
             ReadGroupMap (os.path.join (confdir, sline[1]), sline[2])
+        elif sline[0] == 'VirtualEmployer':
+            ReadVirtual (file, ' '.join (sline[1:]))
         else:
             croak ('Unrecognized config line: "%s"' % (line))
         line = ReadConfigLine (file)

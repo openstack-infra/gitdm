@@ -379,6 +379,8 @@ print >> sys.stderr, 'Grabbing changesets...done       '
 
 if DumpDB:
     database.DumpDB ()
+database.MixVirtuals ()
+
 #
 # Say something
 #
