@@ -416,7 +416,7 @@ for logpatch in patches:
             hacker.addtested (p)
         for hacker in p.reports:
             hacker.addreport (p)
-    CSCount += 1
+        CSCount += 1
     csvdump.AccumulatePatch (p, Aggregate)
 print >> sys.stderr, 'Grabbing changesets...done       '
 
