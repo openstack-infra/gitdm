@@ -14,7 +14,7 @@
 import database, csvdump, ConfigFile, reports
 import getopt, datetime
 import os, re, sys, rfc822, string
-from patterns import *
+from patterns import patterns
 
 Today = datetime.date.today()
 
@@ -168,7 +168,7 @@ def grabpatch():
     global NextLine
     
     while (1):
-        m = Pcommit.match (NextLine)
+        m = patterns['commit'].match (NextLine)
         if m:
             break;
         NextLine = sys.stdin.readline ()
@@ -183,14 +183,14 @@ def grabpatch():
         #
         # If this line starts a new commit, drop out.
         #
-        m = Pcommit.match (Line)
+        m = patterns['commit'].match (Line)
         if m:
             break
         NextLine = sys.stdin.readline ()
         #
         # Maybe it's an author line?
         #
-        m = Pauthor.match (Line)
+        m = patterns['author'].match (Line)
         if m:
             p.email = database.RemapEmail (m.group (2))
             p.author = LookupStoreHacker(m.group (1), p.email)
@@ -198,7 +198,7 @@ def grabpatch():
         #
         # Could be a signed-off-by:
         #
-        m = Psob.match (Line)
+        m = patterns['signed-off-by'].match (Line)
         if m:
             email = database.RemapEmail (m.group (2))
             sobber = LookupStoreHacker(m.group (1), email)
@@ -208,24 +208,26 @@ def grabpatch():
         #
         # Various other tags of interest.
         #
-        m = Preview.match (Line)  # Reviewed-by:
+        m = patterns['reviewed-by'].match (Line)
         if m:
             email = database.RemapEmail (m.group (2))
             p.addreviewer (LookupStoreHacker(m.group (1), email))
             continue
-        m = Ptest.match (Line)    # Tested-by:
+        m = patterns['tested-by'].match (Line)
         if m:
             email = database.RemapEmail (m.group (2))
             p.addtester (LookupStoreHacker (m.group (1), email))
             p.author.testcredit (patch)
             continue
-        m = Prep.match (Line)     # Reported-by:
+        # Reported-by:
+        m = patterns['reported-by'].match (Line)
         if m:
             email = database.RemapEmail (m.group (2))
             p.addreporter (LookupStoreHacker (m.group (1), email))
             p.author.reportcredit (patch)
             continue
-        m = Preptest.match (Line)  # Reported-and-tested-by:
+        # Reported-and-tested-by:
+        m = patterns['reported-and-tested-by'].match (Line)
         if m:
             email = database.RemapEmail (m.group (2))
             h = LookupStoreHacker (m.group (1), email)
@@ -237,14 +239,14 @@ def grabpatch():
         #
         # If this one is a merge, make note of the fact.
         #
-        m = Pmerge.match (Line)
+        m = patterns['merge'].match (Line)
         if m:
             p.merge = 1
             continue
         #
         # See if it's the date.
         #
-        m = Pdate.match (Line)
+        m = patterns['date'].match (Line)
         if m:
             dt = rfc822.parsedate(m.group (2))
             p.date = datetime.date (dt[0], dt[1], dt[2])
@@ -262,26 +264,30 @@ def grabpatch():
             # OK, maybe it's part of the diff itself.
             #
             if not ignore:
-                if Padd.match (Line):
+                if patterns['add'].match (Line):
                     p.added += 1
                     continue
-                if Prem.match (Line):
+                if patterns['rem'].match (Line):
                     p.removed += 1
         else:
             # Get the statistics (lines added/removes) using numstats
             # and without requiring a diff (--numstat instead -p)
-            m = Pnumstat.match (Line)
+            m = patterns['numstat'].match (Line)
             if m:
+                filename = m.group(3)
                 # If we have a file filter, check for file lines.
-                if FileFilter and not FileFilter.search (m.group(3)):
+                if FileFilter and not FileFilter.search (filename):
                     continue
 
                 try:
-                    p.added += int(m.group(1))
-                    p.removed += int(m.group(2))
+                    added = int(m.group(1))
+                    removed = int(m.group(2))
                 except ValueError:
                     # A binary file (image, etc.) is marked with '-'
-                    pass
+                    added = removed = 0
+
+                p.added += added
+                p.removed += removed
 
     if '@' in p.author.name:
         GripeAboutAuthorName (p.author.name)
@@ -299,7 +305,7 @@ def ApplyFileFilter (line, ignore):
     # If this is the first file line (--- a/), set ignore one way
     # or the other.
     #
-    m = Pfilea.match (line)
+    m = patterns['filea'].match (line)
     if m:
         file = m.group (1)
         if FileFilter.search (file):
@@ -308,7 +314,7 @@ def ApplyFileFilter (line, ignore):
     #
     # For the second line, we can turn ignore off, but not on
     #
-    m = Pfileb.match (line)
+    m = patterns['fileb'].match (line)
     if m:
         file = m.group (1)
         if FileFilter.search (file):
