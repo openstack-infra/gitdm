@@ -37,3 +37,7 @@ PExtMerge = re.compile(r'^ +Merge( branch .* of)? ([^ ]+:[^ ]+)\n$')
 PIntMerge = re.compile(r'^ +(Merge|Pull) .* into .*$')
 # PIntMerge2 = re.compile(r"^ +Merge branch(es)? '.*$")
 PIntMerge2 = re.compile(r"^ +Merge .*$")
+#
+# Another way to get the statistics (per file).  It implies --numstat
+Pnumstat = re.compile('^(\d+|-)\s+(\d+|-)\s+(.*)$')
+Prename = re.compile('(.*)\{(.*) => (.*)\}(.*)')

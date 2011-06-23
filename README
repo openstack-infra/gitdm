@@ -20,6 +20,10 @@ Run it like this:
 
    git log -p -M [details] | gitdm [options]
 
+Alternatively, you can run with:
+
+   git log --numstat -M [details] | gitdm -n [options]
+
 The [details] tell git which changesets are of interest; the [options] can
 be:
 
@@ -43,6 +47,8 @@ be:
 	-h file	Generate HTML output to the given file
 
 	-l num	Only list the top <num> entries in each report.
+
+    -n  Use --numstat instead of generated patches to get the statistics.
 
 	-o file	Write text output to the given file (default is stdout).
 
@@ -68,6 +74,10 @@ looks like:
     git log -p -M v2.6.19..v2.6.20 | \
 	gitdm -u -s -a -o results -h results.html
 
+or:
+
+    git log --numstat -M v2.6.19..v2.6.20 | \
+	gitdm -u -s -a -n -o results -h results.html
 
 CONFIGURATION FILE
 
