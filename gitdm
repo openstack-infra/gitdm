@@ -14,6 +14,7 @@
 import database, csvdump, ConfigFile, reports
 import getopt, datetime
 import os, re, sys, rfc822, string
+import file_types
 from patterns import patterns
 
 Today = datetime.date.today()
@@ -143,6 +144,8 @@ def PrintDateStats():
 # Let's slowly try to move some smarts into this class.
 #
 class patch:
+    (ADDED, REMOVED) = range (2)
+
     def __init__ (self, commit):
         self.commit = commit
         self.merge = self.added = self.removed = 0
@@ -152,6 +155,7 @@ class patch:
         self.reviews = [ ]
         self.testers = [ ]
         self.reports = [ ]
+        self.filetypes = {}
 
     def addreviewer (self, reviewer):
         self.reviews.append (reviewer)
@@ -161,6 +165,13 @@ class patch:
 
     def addreporter (self, reporter):
         self.reports.append (reporter)
+
+    def addfiletype (self, filetype, added, removed):
+        if self.filetypes.has_key (filetype):
+            self.filetypes[filetype][self.ADDED] += added
+            self.filetypes[filetype][self.REMOVED] += removed
+        else:
+            self.filetypes[filetype] = [added, removed]
 
 def parse_numstat(line, file_filter):
     """
@@ -172,7 +183,7 @@ def parse_numstat(line, file_filter):
         filename = m.group (3)
         # If we have a file filter, check for file lines.
         if file_filter and not file_filter.search (filename):
-            return None, None, None
+            return None, None, None, None
 
         try:
             added = int (m.group (1))
@@ -181,9 +192,14 @@ def parse_numstat(line, file_filter):
             # A binary file (image, etc.) is marked with '-'
             added = removed = 0
 
-        return filename, added, removed
+        m = patterns['rename'].match (filename)
+        if m:
+            filename = '%s%s%s' % (m.group (1), m.group (3), m.group (4))
+
+        filetype = file_types.guess_file_type (os.path.basename(filename))
+        return filename, filetype, added, removed
     else:
-        return None, None, None
+        return None, None, None, None
 
 #
 # The core hack for grabbing the information about a changeset.
@@ -296,10 +312,11 @@ def grabpatch():
         else:
             # Get the statistics (lines added/removes) using numstats
             # and without requiring a diff (--numstat instead -p)
-            (filename, added, removed) = parse_numstat (Line, FileFilter)
-            if filename:
-                p.added += added
-                p.removed += removed
+			(filename, filetype, added, removed) = parse_numstat (Line, FileFilter)
+			if filename:
+			    p.added += added
+			    p.removed += removed
+			    p.addfiletype (filetype, added, removed)
 
     if '@' in p.author.name:
         GripeAboutAuthorName (p.author.name)
