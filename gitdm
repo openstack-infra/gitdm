@@ -161,6 +161,30 @@ class patch:
 
     def addreporter (self, reporter):
         self.reports.append (reporter)
+
+def parse_numstat(line, file_filter):
+    """
+        Receive a line of text, determine if fits a numstat line and
+        parse the added and removed lines as well as the file type.
+    """
+    m = patterns['numstat'].match (line)
+    if m:
+        filename = m.group (3)
+        # If we have a file filter, check for file lines.
+        if file_filter and not file_filter.search (filename):
+            return None, None, None
+
+        try:
+            added = int (m.group (1))
+            removed = int (m.group (2))
+        except ValueError:
+            # A binary file (image, etc.) is marked with '-'
+            added = removed = 0
+
+        return filename, added, removed
+    else:
+        return None, None, None
+
 #
 # The core hack for grabbing the information about a changeset.
 #
@@ -272,20 +296,8 @@ def grabpatch():
         else:
             # Get the statistics (lines added/removes) using numstats
             # and without requiring a diff (--numstat instead -p)
-            m = patterns['numstat'].match (Line)
-            if m:
-                filename = m.group(3)
-                # If we have a file filter, check for file lines.
-                if FileFilter and not FileFilter.search (filename):
-                    continue
-
-                try:
-                    added = int(m.group(1))
-                    removed = int(m.group(2))
-                except ValueError:
-                    # A binary file (image, etc.) is marked with '-'
-                    added = removed = 0
-
+            (filename, added, removed) = parse_numstat (Line, FileFilter)
+            if filename:
                 p.added += added
                 p.removed += removed
 
