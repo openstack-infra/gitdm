@@ -46,4 +46,6 @@ patterns = {
     # It implies --numstat
     'numstat': re.compile('^(\d+|-)\s+(\d+|-)\s+(.*)$'),
     'rename' : re.compile('(.*)\{(.*) => (.*)\}(.*)'),
+    # Detect errors on svn conversions
+    'svn-tag': re.compile("^svn path=/tags/(.*)/?; revision=([0-9]+)$"),
 }

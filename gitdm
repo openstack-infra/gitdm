@@ -341,6 +341,22 @@ def ApplyFileFilter (line, ignore):
             return 0
     return ignore
 
+def is_svntag(logpatch):
+    """
+        This is a workaround for a bug on the migration to Git
+        from Subversion found in GNOME.  It may happen in other
+        repositories as well.
+    """
+
+    for Line in logpatch:
+        m = patterns['svn-tag'].match(Line.strip())
+        if m:
+            sys.stderr.write ('(W) detected a commit on a svn tag: %s\n' %
+                              (m.group (0),))
+            return True
+
+    return False
+
 #
 # If this patch is signed off by both Andrew Morton and Linus Torvalds,
 # remove the (redundant) Linus signoff.
@@ -384,6 +400,15 @@ for logpatch in patches:
     if (printcount % 50) == 0:
         print >> sys.stderr, 'Grabbing changesets...%d\r' % printcount,
     printcount += 1
+
+    # We want to ignore commits on svn tags since in Subversion
+    # thats mean a copy of the whole repository, which leads to
+    # wrong results.  Some migrations from Subversion to Git does
+    # not catch all this tags/copy and import them just as a new
+    # big changeset.
+    if is_svntag(logpatch):
+        continue
+
     p = grabpatch(logpatch)
     if not p:
         break
