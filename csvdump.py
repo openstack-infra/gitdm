@@ -2,10 +2,12 @@
 # aggregate per-month statistics for people
 #
 import sys, datetime
+import csv
 
 class CSVStat:
-    def __init__ (self, name, employer, date):
+    def __init__ (self, name, email, employer, date):
         self.name = name
+        self.email = email
         self.employer = employer
         self.added = self.removed = 0
         self.date = date
@@ -22,7 +24,7 @@ def AccumulatePatch (p, Aggregate):
     authdatekey = "%s-%s"%(p.author.name, date)
     if authdatekey not in PeriodCommitHash:
         empl = p.author.emailemployer (p.email, p.date)
-        stat = CSVStat (p.author.name, empl, date)
+        stat = CSVStat (p.author.name, p.email, empl, date)
         PeriodCommitHash[authdatekey] = stat
     else:
         stat = PeriodCommitHash[authdatekey]
@@ -31,10 +33,14 @@ def AccumulatePatch (p, Aggregate):
 def OutputCSV (file):
     if file is None:
         return
-    file.write ("Name\tAffliation\tDate\tAdded\tRemoved\n")
+    writer = csv.writer (file, quoting=csv.QUOTE_NONNUMERIC)
+    writer.writerow (['Name', 'Email', 'Affliation', 'Date',
+                      'Added', 'Removed'])
     for date, stat in PeriodCommitHash.items():
         # sanitise names " is common and \" sometimes too
-        empl_name = stat.employer.name.replace ("\"", ".").replace ("\\", ".")
-        author_name = stat.name.replace ("\"", ".").replace ("\\", ".")
-        file.write ("\"%s\"\t\"%s\"\t%s\t%d\t%d\n"%(author_name, empl_name, stat.date, \
-                                                    stat.added, stat.removed))
+        empl_name = stat.employer.name.replace ('"', '.').replace ('\\', '.')
+        author_name = stat.name.replace ('"', '.').replace ('\\', '.')
+        writer.writerow ([author_name, stat.email, empl_name, stat.date,
+                          stat.added, stat.removed])
+
+__all__ = [ 'OutputCSV' ]
