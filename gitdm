@@ -1,11 +1,12 @@
 #!/usr/bin/python
-#
+#-*- coding:utf-8 -*-
 
 #
 # This code is part of the LWN git data miner.
 #
 # Copyright 2007-11 Eklektix, Inc.
 # Copyright 2007-11 Jonathan Corbet <corbet@lwn.net>
+# Copyright 2011 Germán Póo-Caamaño <gpoo@gnome.org>
 #
 # This file may be distributed under the terms of the GNU General
 # Public License, version 2.
@@ -15,6 +16,7 @@ import database, csvdump, ConfigFile, reports
 import getopt, datetime
 import os, re, sys, rfc822, string
 import file_types
+import logparser
 from patterns import patterns
 
 Today = datetime.date.today()
@@ -204,29 +206,14 @@ def parse_numstat(line, file_filter):
 #
 # The core hack for grabbing the information about a changeset.
 #
-def grabpatch():
-    global NextLine
-    
-    while (1):
-        m = patterns['commit'].match (NextLine)
-        if m:
-            break;
-        NextLine = sys.stdin.readline ()
-        if not NextLine:
-            return
+def grabpatch(logpatch):
+    m = patterns['commit'].match (logpatch[0])
+    if not m:
+        return None
 
     p = patch(m.group (1))
-    NextLine = sys.stdin.readline ()
     ignore = (FileFilter is not None)
-    while NextLine:
-        Line = NextLine
-        #
-        # If this line starts a new commit, drop out.
-        #
-        m = patterns['commit'].match (Line)
-        if m:
-            break
-        NextLine = sys.stdin.readline ()
+    for Line in logpatch[1:]:
         #
         # Maybe it's an author line?
         #
@@ -379,7 +366,6 @@ if AkpmOverLt == 1:
     Akpm = ('akpm@linux-foundation.org',
         LookupStoreHacker ('Andrew Morton', 'akpm@linux-foundation.org'))
 
-NextLine = sys.stdin.readline ()
 TotalChanged = TotalAdded = TotalRemoved = 0
 
 #
@@ -387,12 +373,14 @@ TotalChanged = TotalAdded = TotalRemoved = 0
 #
 print >> sys.stderr, 'Grabbing changesets...\r',
 
+patches = logparser.LogPatchSplitter(sys.stdin)
 printcount = CSCount = 0
-while (1):
+
+for logpatch in patches:
     if (printcount % 50) == 0:
         print >> sys.stderr, 'Grabbing changesets...%d\r' % printcount,
     printcount += 1
-    p = grabpatch()
+    p = grabpatch(logpatch)
     if not p:
         break
 #    if p.added > 100000 or p.removed > 100000:
