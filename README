@@ -52,6 +52,7 @@ be:
 
 	-o file	Write text output to the given file (default is stdout).
 
+    -p prefix Dump out the database categorized by changeset and by filetype.
 	-r pat	Only generate statistics for changes to files whose 
 	   	name matches the given regular expression.
 

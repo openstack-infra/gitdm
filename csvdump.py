@@ -30,6 +30,48 @@ def AccumulatePatch (p, Aggregate):
         stat = PeriodCommitHash[authdatekey]
     stat.accumulate (p)
 
+ChangeSets = []
+FileTypes = []
+
+def store_patch(patch):
+    if not patch.merge:
+        employer = patch.author.emailemployer(patch.email, patch.date)
+        employer = employer.name.replace('"', '.').replace ('\\', '.')
+        author = patch.author.name.replace ('"', '.').replace ('\\', '.')
+        author = patch.author.name.replace ("'", '.')
+        try:
+            domain = patch.email.split('@')[1]
+        except:
+            domain = patch.email
+        ChangeSets.append([patch.commit, str(patch.date),
+                           patch.email, domain, author, employer,
+                           patch.added, patch.removed])
+        for (filetype, (added, removed)) in patch.filetypes.iteritems():
+            FileTypes.append([patch.commit, filetype, added, removed])
+
+
+def save_csv (prefix='data'):
+    # Dump the ChangeSets
+    if len(ChangeSets) > 0:
+        fd = open('%s-changesets.csv' % prefix, 'w')
+        writer = csv.writer (fd, quoting=csv.QUOTE_NONNUMERIC)
+        writer.writerow (['Commit', 'Date', 'Domain',
+                          'Email', 'Name', 'Affliation',
+                          'Added', 'Removed'])
+        for commit in ChangeSets:
+            writer.writerow(commit)
+
+    # Dump the file types
+    if len(FileTypes) > 0:
+        fd = open('%s-filetypes.csv' % prefix, 'w')
+        writer = csv.writer (fd, quoting=csv.QUOTE_NONNUMERIC)
+
+        writer.writerow (['Commit', 'Type', 'Added', 'Removed'])
+        for commit in FileTypes:
+            writer.writerow(commit)
+
+
+
 def OutputCSV (file):
     if file is None:
         return
@@ -43,4 +85,4 @@ def OutputCSV (file):
         writer.writerow ([author_name, stat.email, empl_name, stat.date,
                           stat.added, stat.removed])
 
-__all__ = [ 'OutputCSV' ]
+__all__ = [  'AccumulatePatch', 'OutputCSV', 'store_patch' ]
