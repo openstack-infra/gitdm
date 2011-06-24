@@ -41,6 +41,7 @@ CFName = 'gitdm.config'
 DirName = ''
 Aggregate = 'month'
 Numstat = 0
+ReportByFileType = 0
 
 #
 # Options:
@@ -66,8 +67,9 @@ def ParseOpts ():
     global MapUnknown, DevReports
     global DateStats, AuthorSOBs, FileFilter, AkpmOverLt, DumpDB
     global CFName, CSVFile, CSVPrefix,DirName, Aggregate, Numstat
+    global ReportByFileType
 
-    opts, rest = getopt.getopt (sys.argv[1:], 'ab:dc:Dh:l:no:p:r:suwx:z')
+    opts, rest = getopt.getopt (sys.argv[1:], 'ab:dc:Dh:l:no:p:r:stuwx:z')
     for opt in opts:
         if opt[0] == '-a':
             AkpmOverLt = 1
@@ -94,6 +96,8 @@ def ParseOpts ():
             FileFilter = re.compile (opt[1])
         elif opt[0] == '-s':
             AuthorSOBs = 0
+        elif opt[0] == '-t':
+            ReportByFileType = 1
         elif opt[0] == '-u':
             MapUnknown = 1
         elif opt[0] == '-x':
@@ -485,3 +489,6 @@ if CSVFile:
 if DevReports:
     reports.DevReports (hlist, TotalChanged, CSCount, TotalRemoved)
 reports.EmplReports (elist, TotalChanged, CSCount)
+
+if ReportByFileType and Numstat:
+    reports.ReportByFileType (hlist)
