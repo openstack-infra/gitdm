@@ -13,18 +13,42 @@
 import sys, re, datetime, os.path
 import database
 
-#
-# Read a line and strip out junk.
-#
-def ReadConfigLine (file):
-    line = file.readline ()
-    if not line:
-        return None
-    line = line.split('#')[0] # Get rid of any comments
-    line = line.strip () # and extra white space
-    if len (line) == 0: # we got rid of everything
-        return ReadConfigLine (file)
-    return line
+class ReadConfigLine:
+    """
+        ReadConfigLine provides a iterator to extract line
+        from an config file without comments.
+
+        Typical use case:
+
+            fd = open(filename, 'r')
+            for line in ReadConfigLine(fd):
+                parse_line(line)
+            fd.close(fd)
+    """
+
+    def __init__(self, fd):
+        self.fd = fd
+        self.buffer = None
+        self.patch = []
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        line = self.fd.readline()
+        while line:
+            line = line.split('#')[0] # Get rid of any comments
+            line = line.strip()       # and extra white space
+            if len(line) == 0:       # we got rid of everything
+                line = self.fd.readline()
+            else:
+                break
+
+        if not line:
+            raise StopIteration
+
+        return line
+
 
 #
 # Give up and die.
@@ -38,19 +62,19 @@ def croak (message):
 #
 def ReadEmailAliases (name):
     try:
-        file = open (name, 'r')
+        fd = open (name, 'r')
     except IOError:
         croak ('Unable to open email alias file %s' % (name))
-    line = ReadConfigLine (file)
-    while line:
+
+    for line in ReadConfigLine (fd):
         m = re.match ('^("[^"]+"|\S+)\s+(.+)$', line)
         if not m or len (m.groups ()) != 2:
             croak ('Funky email alias line "%s"' % (line))
         if m and m.group (2).find ('@') <= 0:
             croak ('Non-addresses in email alias "%s"' % (line))
         database.AddEmailAlias (m.group (1).replace ('"', ''), m.group (2))
-        line = ReadConfigLine (file)
-    file.close ()
+ 
+    fd.close ()
 
 #
 # The Email/Employer map
@@ -59,11 +83,11 @@ EMMpat = re.compile (r'^([^\s]+)\s+([^<]+)\s*(<\s*(\d+-\d+-\d+)\s*)?$')
 
 def ReadEmailEmployers (name):
     try:
-        file = open (name, 'r')
+        fd = open (name, 'r')
     except IOError:
         croak ('Unable to open email/employer file %s' % (name))
-    line = ReadConfigLine (file)
-    while line:
+
+    for line in ReadConfigLine (fd):
         m = EMMpat.match (line)
         if not m:
             croak ('Funky email/employer line "%s"' % (line))
@@ -71,8 +95,8 @@ def ReadEmailEmployers (name):
         company = m.group (2).strip ()
         enddate = ParseDate (m.group (4))
         database.AddEmailEmployerMapping (email, company, enddate)
-        line = ReadConfigLine (file)
-    file.close ()
+ 
+    fd.close ()
 
 def ParseDate (cdate):
     if not cdate:
@@ -83,22 +107,22 @@ def ParseDate (cdate):
 
 def ReadGroupMap (fname, employer):
     try:
-        file = open (fname, 'r')
+        fd = open (fname, 'r')
     except IOError:
         croak ('Unable to open group map file %s' % (fname))
-    line = ReadConfigLine (file)
-    while line:
+
+    for line in ReadConfigLine (fd):
         database.AddEmailEmployerMapping (line, employer)
-        line = ReadConfigLine (file)
-    file.close ()
+
+    fd.close ()
 
 #
 # Read in a virtual employer description.
 #
-def ReadVirtual (file, name):
+def ReadVirtual (fd, name):
     ve = database.VirtualEmployer (name)
-    line = ReadConfigLine (file)
-    while line:
+
+    for line in ReadConfigLine (fd):
         sl = line.split (None, 1)
         first = sl[0]
         if first == 'end':
@@ -116,7 +140,6 @@ def ReadVirtual (file, name):
         if not (0 < percent <= 100):
             croak ('Bad split value "%s" for virtual empl %s' % (first, name))
         ve.addsplit (' '.join (sl[1:]), percent/100.0)
-        line = ReadConfigLine (file)
     #
     # We should never get here
     #
@@ -127,21 +150,20 @@ def ReadVirtual (file, name):
 #
 def ReadFileType (filename):
     try:
-        file = open (filename, 'r')
+        fd = open (filename, 'r')
     except IOError:
         croak ('Unable to open file type mapping file %s' % (filename))
     patterns = {}
     order = []
     regex_order = re.compile ('^order\s+(.*)$')
     regex_file_type = re.compile ('^filetype\s+(\S+)\s+(.+)$')
-    line = ReadConfigLine (file)
-    while line:
+
+    for line in ReadConfigLine (fd):
         o = regex_order.match (line)
         if o:
             # Consider only the first definition in the config file
             elements = o.group(1).replace (' ', '')
             order = order or elements.split(',')
-            line = ReadConfigLine (file)
             continue
 
         m = regex_file_type.match (line)
@@ -155,8 +177,7 @@ def ReadFileType (filename):
 
         patterns[m.group (1)].append (re.compile (m.group (2), re.IGNORECASE))
 
-        line = ReadConfigLine (file)
-    file.close ()
+    fd.close ()
     return patterns, order
 
 #
@@ -165,11 +186,11 @@ def ReadFileType (filename):
 
 def ConfigFile (name, confdir):
     try:
-        file = open (name, 'r')
+        fd = open (name, 'r')
     except IOError:
         croak ('Unable to open config file %s' % (name))
-    line = ReadConfigLine (file)
-    while line:
+
+    for line in ReadConfigLine (fd):
         sline = line.split (None, 2)
         if len (sline) < 2:
             croak ('Funky config line: "%s"' % (line))
@@ -188,5 +209,15 @@ def ConfigFile (name, confdir):
             database.FileTypes = database.FileType (patterns, order)
         else:
             croak ('Unrecognized config line: "%s"' % (line))
-        line = ReadConfigLine (file)
+
+
+if __name__ == '__main__':
+    '''Test the iterato for reading configuration files'''
+    try:
+        fd = open(sys.argv[1])
+    except:
+        croak('Usage: %s <config-file>' % sys.argv[0])
+    
+    for line in ReadConfigLine(fd):
+        print line
         
