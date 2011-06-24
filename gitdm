@@ -15,7 +15,6 @@
 import database, csvdump, ConfigFile, reports
 import getopt, datetime
 import os, re, sys, rfc822, string
-import file_types
 import logparser
 from patterns import patterns
 
@@ -202,7 +201,7 @@ def parse_numstat(line, file_filter):
         if m:
             filename = '%s%s%s' % (m.group (1), m.group (3), m.group (4))
 
-        filetype = file_types.guess_file_type (os.path.basename(filename))
+        filetype = database.FileTypes.guess_file_type (os.path.basename(filename))
         return filename, filetype, added, removed
     else:
         return None, None, None, None

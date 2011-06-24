@@ -123,6 +123,43 @@ def ReadVirtual (file, name):
     croak ('Missing "end" line for virtual employer %s' % (name))
 
 #
+# Read file type patterns for more fine graned reports
+#
+def ReadFileType (filename):
+    try:
+        file = open (filename, 'r')
+    except IOError:
+        croak ('Unable to open file type mapping file %s' % (filename))
+    patterns = {}
+    order = []
+    regex_order = re.compile ('^order\s+(.*)$')
+    regex_file_type = re.compile ('^filetype\s+(\S+)\s+(.+)$')
+    line = ReadConfigLine (file)
+    while line:
+        o = regex_order.match (line)
+        if o:
+            # Consider only the first definition in the config file
+            elements = o.group(1).replace (' ', '')
+            order = order or elements.split(',')
+            line = ReadConfigLine (file)
+            continue
+
+        m = regex_file_type.match (line)
+        if not m or len (m.groups ()) != 2:
+            ConfigFile.croak ('Funky file type line "%s"' % (line))
+        if not patterns.has_key (m.group (1)):
+            patterns[m.group (1)] = []
+        if m.group (1) not in order:
+            print '%s not found, appended to the last order' % m.group (1)
+            order.append (m.group (1))
+
+        patterns[m.group (1)].append (re.compile (m.group (2), re.IGNORECASE))
+
+        line = ReadConfigLine (file)
+    file.close ()
+    return patterns, order
+
+#
 # Read an overall config file.
 #
 
@@ -146,6 +183,9 @@ def ConfigFile (name, confdir):
             ReadGroupMap (os.path.join (confdir, sline[1]), sline[2])
         elif sline[0] == 'VirtualEmployer':
             ReadVirtual (file, ' '.join (sline[1:]))
+        elif sline[0] == 'FileTypeMap':
+            patterns, order = ReadFileType (os.path.join (confdir, sline[1]))
+            database.FileTypes = database.FileType (patterns, order)
         else:
             croak ('Unrecognized config line: "%s"' % (line))
         line = ReadConfigLine (file)

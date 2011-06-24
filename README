@@ -145,6 +145,24 @@ end
 	for example, no check to ensure that the percentages add up to
     	something rational.
 
+FileTypeMap file
+
+	Map file names/extensions onto file types.  These files contain lines
+	like:
+
+		order <type1>,<type2>,...,<typeN>
+
+		filetype <type> <regex>
+		...
+
+	This construct allows fine graned reports by type of contribution
+	(build, code, image, multimedia, documentation, etc.)
+
+	Order is important because it is possible to have overlapping between
+	filenames.  For instance, ltmain.sh fits better as 'build' instead of
+	'code' (the filename instead of '\.sh$').  The first element in order
+	has precedence over the next ones.
+
 
 OTHER TOOLS
 
