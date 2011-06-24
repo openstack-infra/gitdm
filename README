@@ -36,13 +36,13 @@ be:
 	   	By default, "./gitdm.config" is used.
 
 	-d	Omit the developer reports, giving employer information
-         	only. 
+         	only.
 
-	-D	Rather than create the usual statistics, create a 
-        file (datelc) providing lines changed per day, where the first column
-        displays the changes happened only on that day and the second sums
-        the day it happnened with the previous ones. This option is suitable
-        for feeding to a tool like gnuplot.
+	-D	Rather than create the usual statistics, create a file (datelc.csv)
+	    providing lines changed per day, where the first column displays
+	    the changes happened only on that day and the second sums the day it
+	    happnened with the previous ones. This option is suitable for
+	    feeding to a tool like gnuplot.
 
 	-h file	Generate HTML output to the given file
 
@@ -52,12 +52,18 @@ be:
 
 	-o file	Write text output to the given file (default is stdout).
 
-    -p prefix Dump out the database categorized by changeset and by filetype.
+    -p prefix Dump out the database categorized by changeset and by file type.
+	    It requires -n, otherwise it is not possible to get separated results.
+
 	-r pat	Only generate statistics for changes to files whose 
 	   	name matches the given regular expression.
 
 	-s	Ignore Signed-off-by lines which match the author of 
 		each patch.
+
+	-t	Generate a report by type of contribution (code, documentation, etc.).
+	    It requires -n, otherwise this option is ignored silently.
+
 
 	-u 	Group all unknown developers under the "(Unknown)"
  	        employer. 
