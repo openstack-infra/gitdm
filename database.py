@@ -205,7 +205,10 @@ class FileType:
 
         return 'unknown'
 
-FileTypes = None
+#
+# By default we recognize nothing.
+#
+FileTypes = FileType ({}, [])
 
 #
 # Mix all the virtual employers into their real destinations.
