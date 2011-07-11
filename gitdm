@@ -1,4 +1,5 @@
 #!/usr/bin/pypy
+#-*- coding:utf-8 -*-
 #
 
 #
@@ -6,15 +7,17 @@
 #
 # Copyright 2007-11 Eklektix, Inc.
 # Copyright 2007-11 Jonathan Corbet <corbet@lwn.net>
+# Copyright 2011 Germán Póo-Caamaño <gpoo@gnome.org>
 #
 # This file may be distributed under the terms of the GNU General
 # Public License, version 2.
 
 
-import database, csv, ConfigFile, reports
+import database, csvdump, ConfigFile, reports
 import getopt, datetime
 import os, re, sys, rfc822, string
-from patterns import *
+import logparser
+from patterns import patterns
 
 Today = datetime.date.today()
 
@@ -32,11 +35,14 @@ DateStats = 0
 AuthorSOBs = 1
 FileFilter = None
 CSVFile = None
+CSVPrefix = None
 AkpmOverLt = 0
 DumpDB = 0
 CFName = 'gitdm.config'
 DirName = ''
 Aggregate = 'month'
+Numstat = 0
+ReportByFileType = 0
 
 #
 # Options:
@@ -48,7 +54,9 @@ Aggregate = 'month'
 # -D		Output date statistics
 # -h hfile	HTML output to hfile
 # -l count	Maximum length for output lists
+# -n        Use numstats instead of generated patch from git log
 # -o file	File for text output
+# -p prefix Prefix for CSV output
 # -r pattern	Restrict to files matching pattern
 # -s		Ignore author SOB lines
 # -u		Map unknown employers to '(Unknown)'
@@ -59,9 +67,10 @@ Aggregate = 'month'
 def ParseOpts ():
     global MapUnknown, DevReports
     global DateStats, AuthorSOBs, FileFilter, AkpmOverLt, DumpDB
-    global CFName, CSVFile, DirName, Aggregate
+    global CFName, CSVFile, CSVPrefix,DirName, Aggregate, Numstat
+    global ReportByFileType
 
-    opts, rest = getopt.getopt (sys.argv[1:], 'ab:dc:Dh:l:o:r:suwx:z')
+    opts, rest = getopt.getopt (sys.argv[1:], 'ab:dc:Dh:l:no:p:r:stuwx:z')
     for opt in opts:
         if opt[0] == '-a':
             AkpmOverLt = 1
@@ -77,13 +86,19 @@ def ParseOpts ():
             reports.SetHTMLOutput (open (opt[1], 'w'))
         elif opt[0] == '-l':
             reports.SetMaxList (int (opt[1]))
+        elif opt[0] == '-n':
+            Numstat = 1
         elif opt[0] == '-o':
             reports.SetOutput (open (opt[1], 'w'))
+        elif opt[0] == '-p':
+            CSVPrefix = opt[1]
         elif opt[0] == '-r':
             print 'Filter on "%s"' % (opt[1])
             FileFilter = re.compile (opt[1])
         elif opt[0] == '-s':
             AuthorSOBs = 0
+        elif opt[0] == '-t':
+            ReportByFileType = 1
         elif opt[0] == '-u':
             MapUnknown = 1
         elif opt[0] == '-x':
@@ -139,6 +154,8 @@ def PrintDateStats():
 # Let's slowly try to move some smarts into this class.
 #
 class patch:
+    (ADDED, REMOVED) = range (2)
+
     def __init__ (self, commit):
         self.commit = commit
         self.merge = self.added = self.removed = 0
@@ -148,6 +165,7 @@ class patch:
         self.reviews = [ ]
         self.testers = [ ]
         self.reports = [ ]
+        self.filetypes = {}
 
     def addreviewer (self, reviewer):
         self.reviews.append (reviewer)
@@ -157,36 +175,57 @@ class patch:
 
     def addreporter (self, reporter):
         self.reports.append (reporter)
+
+    def addfiletype (self, filetype, added, removed):
+        if self.filetypes.has_key (filetype):
+            self.filetypes[filetype][self.ADDED] += added
+            self.filetypes[filetype][self.REMOVED] += removed
+        else:
+            self.filetypes[filetype] = [added, removed]
+
+def parse_numstat(line, file_filter):
+    """
+        Receive a line of text, determine if fits a numstat line and
+        parse the added and removed lines as well as the file type.
+    """
+    m = patterns['numstat'].match (line)
+    if m:
+        filename = m.group (3)
+        # If we have a file filter, check for file lines.
+        if file_filter and not file_filter.search (filename):
+            return None, None, None, None
+
+        try:
+            added = int (m.group (1))
+            removed = int (m.group (2))
+        except ValueError:
+            # A binary file (image, etc.) is marked with '-'
+            added = removed = 0
+
+        m = patterns['rename'].match (filename)
+        if m:
+            filename = '%s%s%s' % (m.group (1), m.group (3), m.group (4))
+
+        filetype = database.FileTypes.guess_file_type (os.path.basename(filename))
+        return filename, filetype, added, removed
+    else:
+        return None, None, None, None
+
 #
 # The core hack for grabbing the information about a changeset.
 #
-def grabpatch():
-    global NextLine
-    
-    while (1):
-        m = Pcommit.match (NextLine)
-        if m:
-            break;
-        NextLine = sys.stdin.readline ()
-        if not NextLine:
-            return
+def grabpatch(logpatch):
+    m = patterns['commit'].match (logpatch[0])
+    if not m:
+        return None
 
     p = patch(m.group (1))
-    NextLine = sys.stdin.readline ()
     ignore = (FileFilter is not None)
-    while NextLine:
-        Line = NextLine
-        #
-        # If this line starts a new commit, drop out.
-        #
-        m = Pcommit.match (Line)
-        if m:
-            break
-        NextLine = sys.stdin.readline ()
+    for Line in logpatch[1:]:
         #
         # Maybe it's an author line?
         #
-        m = Pauthor.match (Line)
+        m = patterns['author'].match (Line)
         if m:
             p.email = database.RemapEmail (m.group (2))
             p.author = LookupStoreHacker(m.group (1), p.email)
@@ -194,7 +233,7 @@ def grabpatch():
         #
         # Could be a signed-off-by:
         #
-        m = Psob.match (Line)
+        m = patterns['signed-off-by'].match (Line)
         if m:
             email = database.RemapEmail (m.group (2))
             sobber = LookupStoreHacker(m.group (1), email)
@@ -204,24 +243,26 @@ def grabpatch():
         #
         # Various other tags of interest.
         #
-        m = Preview.match (Line)  # Reviewed-by:
+        m = patterns['reviewed-by'].match (Line)
         if m:
             email = database.RemapEmail (m.group (2))
             p.addreviewer (LookupStoreHacker(m.group (1), email))
             continue
-        m = Ptest.match (Line)    # Tested-by:
+        m = patterns['tested-by'].match (Line)
         if m:
             email = database.RemapEmail (m.group (2))
             p.addtester (LookupStoreHacker (m.group (1), email))
             p.author.testcredit (patch)
             continue
-        m = Prep.match (Line)     # Reported-by:
+        # Reported-by:
+        m = patterns['reported-by'].match (Line)
         if m:
             email = database.RemapEmail (m.group (2))
             p.addreporter (LookupStoreHacker (m.group (1), email))
             p.author.reportcredit (patch)
             continue
-        m = Preptest.match (Line)  # Reported-and-tested-by:
+        # Reported-and-tested-by:
+        m = patterns['reported-and-tested-by'].match (Line)
         if m:
             email = database.RemapEmail (m.group (2))
             h = LookupStoreHacker (m.group (1), email)
@@ -233,14 +274,14 @@ def grabpatch():
         #
         # If this one is a merge, make note of the fact.
         #
-        m = Pmerge.match (Line)
+        m = patterns['merge'].match (Line)
         if m:
             p.merge = 1
             continue
         #
         # See if it's the date.
         #
-        m = Pdate.match (Line)
+        m = patterns['date'].match (Line)
         if m:
             dt = rfc822.parsedate(m.group (2))
             p.date = datetime.date (dt[0], dt[1], dt[2])
@@ -248,20 +289,29 @@ def grabpatch():
                 sys.stderr.write ('Funky date: %s\n' % p.date)
                 p.date = Today
             continue
-        #
-        # If we have a file filter, check for file lines.
-        #
-        if FileFilter:
-            ignore = ApplyFileFilter (Line, ignore)
-        #
-        # OK, maybe it's part of the diff itself.
-        #
-        if not ignore:
-            if Padd.match (Line):
-                p.added += 1
-                continue
-            if Prem.match (Line):
-                p.removed += 1
+        if not Numstat:
+            #
+            # If we have a file filter, check for file lines.
+            #
+            if FileFilter:
+                ignore = ApplyFileFilter (Line, ignore)
+            #
+            # OK, maybe it's part of the diff itself.
+            #
+            if not ignore:
+                if patterns['add'].match (Line):
+                    p.added += 1
+                    continue
+                if patterns['rem'].match (Line):
+                    p.removed += 1
+        else:
+            # Get the statistics (lines added/removes) using numstats
+            # and without requiring a diff (--numstat instead -p)
+			(filename, filetype, added, removed) = parse_numstat (Line, FileFilter)
+			if filename:
+			    p.added += added
+			    p.removed += removed
+			    p.addfiletype (filetype, added, removed)
 
     if '@' in p.author.name:
         GripeAboutAuthorName (p.author.name)
@@ -279,7 +329,7 @@ def ApplyFileFilter (line, ignore):
     # If this is the first file line (--- a/), set ignore one way
     # or the other.
     #
-    m = Pfilea.match (line)
+    m = patterns['filea'].match (line)
     if m:
         file = m.group (1)
         if FileFilter.search (file):
@@ -288,12 +338,28 @@ def ApplyFileFilter (line, ignore):
     #
     # For the second line, we can turn ignore off, but not on
     #
-    m = Pfileb.match (line)
+    m = patterns['fileb'].match (line)
     if m:
         file = m.group (1)
         if FileFilter.search (file):
             return 0
     return ignore
+
+def is_svntag(logpatch):
+    """
+        This is a workaround for a bug on the migration to Git
+        from Subversion found in GNOME.  It may happen in other
+        repositories as well.
+    """
+
+    for Line in logpatch:
+        m = patterns['svn-tag'].match(Line.strip())
+        if m:
+            sys.stderr.write ('(W) detected a commit on a svn tag: %s\n' %
+                              (m.group (0),))
+            return True
+
+    return False
 
 #
 # If this patch is signed off by both Andrew Morton and Linus Torvalds,
@@ -324,7 +390,6 @@ if AkpmOverLt == 1:
     Akpm = ('akpm@linux-foundation.org',
         LookupStoreHacker ('Andrew Morton', 'akpm@linux-foundation.org'))
 
-NextLine = sys.stdin.readline ()
 TotalChanged = TotalAdded = TotalRemoved = 0
 
 #
@@ -332,12 +397,23 @@ TotalChanged = TotalAdded = TotalRemoved = 0
 #
 print >> sys.stderr, 'Grabbing changesets...\r',
 
+patches = logparser.LogPatchSplitter(sys.stdin)
 printcount = CSCount = 0
-while (1):
+
+for logpatch in patches:
     if (printcount % 50) == 0:
         print >> sys.stderr, 'Grabbing changesets...%d\r' % printcount,
     printcount += 1
-    p = grabpatch()
+
+    # We want to ignore commits on svn tags since in Subversion
+    # thats mean a copy of the whole repository, which leads to
+    # wrong results.  Some migrations from Subversion to Git does
+    # not catch all this tags/copy and import them just as a new
+    # big changeset.
+    if is_svntag(logpatch):
+        continue
+
+    p = grabpatch(logpatch)
     if not p:
         break
 #    if p.added > 100000 or p.removed > 100000:
@@ -373,8 +449,9 @@ while (1):
             hacker.addtested (p)
         for hacker in p.reports:
             hacker.addreport (p)
-    CSCount += 1
-    csv.AccumulatePatch (p, Aggregate)
+        CSCount += 1
+    csvdump.AccumulatePatch (p, Aggregate)
+    csvdump.store_patch (p)
 print >> sys.stderr, 'Grabbing changesets...done       '
 
 if DumpDB:
@@ -403,10 +480,16 @@ if TotalChanged == 0:
 if DateStats:
     PrintDateStats ()
 
-csv.OutputCSV (CSVFile)
-if CSVFile is not None:
-        CSVFile.close ()
+if CSVPrefix:
+    csvdump.save_csv (CSVPrefix)
+
+if CSVFile:
+    csvdump.OutputCSV (CSVFile)
+    CSVFile.close ()
 
 if DevReports:
     reports.DevReports (hlist, TotalChanged, CSCount, TotalRemoved)
 reports.EmplReports (elist, TotalChanged, CSCount)
+
+if ReportByFileType and Numstat:
+    reports.ReportByFileType (hlist)

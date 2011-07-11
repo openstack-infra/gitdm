@@ -188,6 +188,25 @@ class VirtualEmployer (Employer):
             # Should check that they add up too, but I'm lazy
         Employers[self.name] = self
 
+class FileType:
+    def __init__ (self, patterns={}, order=[]):
+        self.patterns = patterns
+        self.order = order
+
+    def guess_file_type (self, filename, patterns=None, order=None):
+        patterns = patterns or self.patterns
+        order = order or self.order
+
+        for file_type in order:
+            if patterns.has_key (file_type):
+                for patt in patterns[file_type]:
+                    if patt.search (filename):
+                        return file_type
+
+        return 'unknown'
+
+FileTypes = None
+
 #
 # Mix all the virtual employers into their real destinations.
 #

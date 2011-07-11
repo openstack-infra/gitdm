@@ -340,4 +340,46 @@ def EmplReports (elist, totalchanged, cscount):
     ReportByELChanged (elist, totalchanged)
     ReportByESOBs (elist)
     ReportByEHackers (elist)
-    
+
+def ReportByFileType (hacker_list):
+    total = {}
+    total_by_hacker = {}
+
+    BeginReport ('Developer contributions by type')
+    for h in hacker_list:
+        by_hacker = {}
+        for patch in h.patches:
+            # Get a summary by hacker
+            for (filetype, (added, removed)) in patch.filetypes.iteritems():
+                if by_hacker.has_key(filetype):
+                    by_hacker[filetype][patch.ADDED] += added
+                    by_hacker[filetype][patch.REMOVED] += removed
+                else:
+                    by_hacker[filetype] = [added, removed]
+
+                # Update the totals
+                if total.has_key(filetype):
+                    total[filetype][patch.ADDED] += added
+                    total[filetype][patch.REMOVED] += removed
+                else:
+                    total[filetype] = [added, removed, []]
+
+        # Print a summary by hacker
+        print h.name
+        for filetype, counters in by_hacker.iteritems():
+            print '\t', filetype, counters
+            h_added = by_hacker[filetype][patch.ADDED]
+            h_removed = by_hacker[filetype][patch.REMOVED]
+            total[filetype][2].append ([h.name, h_added, h_removed])
+
+    # Print the global summary
+    BeginReport ('Contributions by type and developers')
+    for filetype, (added, removed, hackers) in total.iteritems():
+        print filetype, added, removed
+        for h, h_added, h_removed in hackers:
+            print '\t%s: [%d, %d]' % (h, h_added, h_removed)
+
+    # Print the very global summary
+    BeginReport ('General contributions by type')
+    for filetype, (added, removed, hackers) in total.iteritems():
+        print filetype, added, removed
