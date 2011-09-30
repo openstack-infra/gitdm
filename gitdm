@@ -62,6 +62,7 @@ ReportByFileType = 0
 # -u		Map unknown employers to '(Unknown)'
 # -x file.csv   Export raw statistics as CSV
 # -w        Aggregrate the raw statistics by weeks instead of months
+# -y            Aggregrate the raw statistics by years instead of months
 # -z		Dump out the hacker database at completion
 
 def ParseOpts ():
@@ -70,7 +71,7 @@ def ParseOpts ():
     global CFName, CSVFile, CSVPrefix,DirName, Aggregate, Numstat
     global ReportByFileType
 
-    opts, rest = getopt.getopt (sys.argv[1:], 'ab:dc:Dh:l:no:p:r:stuwx:z')
+    opts, rest = getopt.getopt (sys.argv[1:], 'ab:dc:Dh:l:no:p:r:stuwx:yz')
     for opt in opts:
         if opt[0] == '-a':
             AkpmOverLt = 1
@@ -106,6 +107,8 @@ def ParseOpts ():
             print "open output file " + opt[1] + "\n"
         elif opt [0] == '-w':
             Aggregate = 'week'
+        elif opt [0] == '-y':
+            Aggregate = 'year'
         elif opt[0] == '-z':
             DumpDB = 1
         
