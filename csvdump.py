@@ -9,11 +9,12 @@ class CSVStat:
         self.name = name
         self.email = email
         self.employer = employer
-        self.added = self.removed = 0
+        self.added = self.removed = self.changesets = 0
         self.date = date
     def accumulate (self, p):
         self.added = self.added + p.added
         self.removed = self.removed + p.removed
+        self.changesets += 1
 
 PeriodCommitHash = { }
 
@@ -77,12 +78,12 @@ def OutputCSV (file):
         return
     writer = csv.writer (file, quoting=csv.QUOTE_NONNUMERIC)
     writer.writerow (['Name', 'Email', 'Affliation', 'Date',
-                      'Added', 'Removed'])
+                      'Added', 'Removed', 'Changesets'])
     for date, stat in PeriodCommitHash.items():
         # sanitise names " is common and \" sometimes too
         empl_name = stat.employer.name.replace ('"', '.').replace ('\\', '.')
         author_name = stat.name.replace ('"', '.').replace ('\\', '.')
         writer.writerow ([author_name, stat.email, empl_name, stat.date,
-                          stat.added, stat.removed])
+                          stat.added, stat.removed, stat.changesets])
 
 __all__ = [  'AccumulatePatch', 'OutputCSV', 'store_patch' ]
