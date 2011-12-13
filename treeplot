@@ -11,7 +11,7 @@
 # Public License, version 2.
 #
 import sys
-import patterns
+from patterns import patterns
 
 #
 # The various types of commit we understand.
@@ -141,7 +141,7 @@ def GetCommit():
         line = GetLine()
         if not line:
             return None
-        m = patterns.Pcommit.match(line)
+        m = patterns['commit'].match(line)
         if m:
             break
 
@@ -176,18 +176,18 @@ def GetCommit():
         #
         # Maybe it's an external merge?
         #
-        m = patterns.PExtMerge.match(line)
+        m = patterns['ExtMerge'].match(line)
         if m:
             merge.addtree(LookupTree(m.group(2)))
             return merge
         #
         # OK, maybe it's internal
         #
-        if patterns.PIntMerge.match(line) or patterns.PIntMerge2.match(line):
+        if patterns['IntMerge'].match(line) or patterns['IntMerge2'].match(line):
             #print 'Internal:', line[:-1]
             merge.internal = 1
             return merge
-        m = patterns.Pcommit.match(line)
+        m = patterns['commit'].match(line)
         if m:
             print 'Hit next commit (%s) looking for merge line' % (m.group(1))
             SaveLine(line)
