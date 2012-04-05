@@ -1,0 +1,48 @@
+Processed 375 bugs from 31 developers
+21 employers found
+
+Developers with the most bugs fixed
+gabriel-hurley             184 (49.1%)
+jakedahn                    38 (10.1%)
+andycjw                     34 (9.1%)
+tres                        18 (4.8%)
+ttrifonov                   18 (4.8%)
+emmasteimann                17 (4.5%)
+john-postlethwait           15 (4.0%)
+sleepsonthefloor             8 (2.1%)
+jakez                        5 (1.3%)
+Unknown hacker               4 (1.1%)
+thingee                      4 (1.1%)
+jdanjou                      3 (0.8%)
+paul-mcmillan                3 (0.8%)
+njohnston                    3 (0.8%)
+iartarisi                    2 (0.5%)
+lemonlatte                   2 (0.5%)
+lzyeval                      2 (0.5%)
+ewanmellor                   2 (0.5%)
+crobinso                     1 (0.3%)
+andrewsmedina                1 (0.3%)
+Covers 97.066667% of bugs
+
+Top bugs fixed by employer
+Nebula                     221 (58.9%)
+Rackspace                   50 (13.3%)
+Delta Electronics           34 (9.1%)
+Everbread                   18 (4.8%)
+emmasteimann@gmail.com      17 (4.5%)
+jake@ponyloaf.com            5 (1.3%)
+thingee@gmail.com            4 (1.1%)
+unknown@hacker.net           4 (1.1%)
+onewheeldrive.net@gmail.com    3 (0.8%)
+eNovance                     3 (0.8%)
+SUSE                         3 (0.8%)
+lemonlatte@gmail.com         2 (0.5%)
+SINA                         2 (0.5%)
+Citrix                       2 (0.5%)
+Red Hat                      1 (0.3%)
+HP                           1 (0.3%)
+Managed IT                   1 (0.3%)
+DreamHost                    1 (0.3%)
+andrewsmedina@gmail.com      1 (0.3%)
+Piston Cloud                 1 (0.3%)
+Covers 99.733333% of bugs

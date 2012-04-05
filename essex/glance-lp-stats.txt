@@ -1,0 +1,48 @@
+Processed 183 bugs from 45 developers
+20 employers found
+
+Developers with the most bugs fixed
+bcwaldon                    34 (18.6%)
+jaypipes                    29 (15.8%)
+eglynn                      28 (15.3%)
+dan-prince                  11 (6.0%)
+stuart-mclaren               9 (4.9%)
+rconradharris                6 (3.3%)
+klmitch                      5 (2.7%)
+ttx                          4 (2.2%)
+blamar                       4 (2.2%)
+gandelman-a                  3 (1.6%)
+markmc                       3 (1.6%)
+hudayou                      3 (1.6%)
+zulcss                       3 (1.6%)
+dtroyer                      2 (1.1%)
+justin-fathomdb              2 (1.1%)
+derekh                       2 (1.1%)
+tom-hancock                  2 (1.1%)
+alex-meade                   2 (1.1%)
+markwash                     2 (1.1%)
+russellb                     2 (1.1%)
+Covers 85.245902% of bugs
+
+Top bugs fixed by employer
+Rackspace                   90 (49.2%)
+Red Hat                     41 (22.4%)
+HP                          24 (13.1%)
+Canonical                    6 (3.3%)
+hudayou@hotmail.com          3 (1.6%)
+major@mhtx.net               2 (1.1%)
+SINA                         2 (1.1%)
+Internap                     2 (1.1%)
+FathomDB                     2 (1.1%)
+heut2008@gmail.com           1 (0.5%)
+Vertex                       1 (0.5%)
+edouard1.thuleau@orange.com    1 (0.5%)
+Cloudscaling                 1 (0.5%)
+Nebula                       1 (0.5%)
+SUSE                         1 (0.5%)
+Yahoo!                       1 (0.5%)
+andrew@linuxjedi.co.uk       1 (0.5%)
+unknown@hacker.net           1 (0.5%)
+Piston Cloud                 1 (0.5%)
+Citrix                       1 (0.5%)
+Covers 100.000000% of bugs

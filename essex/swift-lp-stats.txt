@@ -1,0 +1,38 @@
+Processed 37 bugs from 19 developers
+11 employers found
+
+Developers with the most bugs fixed
+chmouel                      9 (24.3%)
+pandemicsyn                  3 (8.1%)
+dweimer                      3 (8.1%)
+eamonn-otoole                2 (5.4%)
+maru                         2 (5.4%)
+dtroyer                      2 (5.4%)
+russellb                     2 (5.4%)
+ttx                          2 (5.4%)
+markgius                     2 (5.4%)
+zaitcev                      1 (2.7%)
+torgomatic                   1 (2.7%)
+gholt                        1 (2.7%)
+jjmartinez                   1 (2.7%)
+lzyeval                      1 (2.7%)
+sasimpson                    1 (2.7%)
+morita-kazutaka              1 (2.7%)
+redbo                        1 (2.7%)
+david-goetz                  1 (2.7%)
+notmyname                    1 (2.7%)
+Covers 100.000000% of bugs
+
+Top bugs fixed by employer
+Rackspace                   20 (54.1%)
+Red Hat                      3 (8.1%)
+dougw@sdsc.edu               3 (8.1%)
+HP                           2 (5.4%)
+launchpad@markgius.com       2 (5.4%)
+Internap                     2 (5.4%)
+SwiftStack                   1 (2.7%)
+SINA                         1 (2.7%)
+morita.kazutaka@gmail.com    1 (2.7%)
+sasimpson@gmail.com          1 (2.7%)
+Memset                       1 (2.7%)
+Covers 100.000000% of bugs
