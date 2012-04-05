@@ -91,7 +91,23 @@ def ReportByPCount (hlist, cscount):
         if count >= ListCount:
             break
     EndReport ()
-            
+
+def CompareBCount (h1, h2):
+    return len (h2.bugsfixed) - len (h1.bugsfixed)
+
+def ReportByBCount (hlist, totalbugs):
+    hlist.sort (CompareBCount)
+    count = 0
+    BeginReport ('Developers with the most bugs fixed')
+    for h in hlist:
+        bcount = len (h.bugsfixed)
+        if bcount > 0:
+            ReportLine (h.name, bcount, (bcount*100.0)/totalbugs)
+        count += 1
+        if count >= ListCount:
+            break
+    EndReport ()
+
 def CompareLChanged (h1, h2):
     return max(h2.added, h2.removed) - max(h1.added, h1.removed)
 
@@ -143,6 +159,20 @@ def ReportByPCEmpl (elist, cscount):
             break
     EndReport ()
 
+def CompareEBCount (e1, e2):
+    return len (e2.bugsfixed) - len (e1.bugsfixed)
+
+def ReportByBCEmpl (elist, totalbugs):
+    elist.sort (CompareEBCount)
+    count = 0
+    BeginReport ('Top bugs fixed by employer')
+    for e in elist:
+        if len(e.bugsfixed) != 0:
+            ReportLine (e.name, len(e.bugsfixed), (len(e.bugsfixed)*100.0)/totalbugs)
+        count += 1
+        if count >= ListCount:
+            break
+    EndReport ()
 
 def CompareELChanged (e1, e2):
     return e2.changed - e1.changed
@@ -340,6 +370,12 @@ def EmplReports (elist, totalchanged, cscount):
     ReportByELChanged (elist, totalchanged)
     ReportByESOBs (elist)
     ReportByEHackers (elist)
+
+def DevBugReports (hlist, totalbugs):
+    ReportByBCount (hlist, totalbugs)
+
+def EmplBugReports (elist, totalbugs):
+    ReportByBCEmpl (elist, totalbugs)
 
 def ReportByFileType (hacker_list):
     total = {}

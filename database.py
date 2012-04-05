@@ -24,6 +24,7 @@ class Hacker:
         self.reviews = [ ]
         self.tested = [ ]
         self.reports = [ ]
+        self.bugsfixed = [ ]
         self.testcred = self.repcred = 0
 
     def addemail (self, email, elist):
@@ -61,6 +62,9 @@ class Hacker:
         self.repcred += 1
     def testcredit (self, patch):
         self.testcred += 1
+
+    def addbugfixed (self, bug):
+        self.bugsfixed.append (bug)
 
 HackersByName = { }
 HackersByEmail = { }
@@ -124,6 +128,7 @@ class Employer:
         self.name = name
         self.added = self.removed = self.count = self.changed = 0
         self.sobs = 0
+        self.bugsfixed = [ ]
         self.hackers = [ ]
 
     def AddCSet (self, patch):
@@ -136,6 +141,11 @@ class Employer:
 
     def AddSOB (self):
         self.sobs += 1
+
+    def AddBug (self, bug):
+        self.bugsfixed.append(bug)
+        if bug.owner not in self.hackers:
+            self.hackers.append (bug.owner)
 
 Employers = { }
 
