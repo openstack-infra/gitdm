@@ -377,17 +377,17 @@ def DevReports (hlist, totalchanged, cscount, totalremoved):
     ReportByPCount (hlist, cscount)
     ReportByLChanged (hlist, totalchanged)
     ReportByLRemoved (hlist, totalremoved)
-    ReportBySOBs (hlist)
-    ReportByRevs (hlist)
-    ReportByTests (hlist)
-    ReportByTestCreds (hlist)
-    ReportByReports (hlist)
-    ReportByRepCreds (hlist)
+    #ReportBySOBs (hlist)
+    #ReportByRevs (hlist)
+    #ReportByTests (hlist)
+    #ReportByTestCreds (hlist)
+    #ReportByReports (hlist)
+    #ReportByRepCreds (hlist)
 
 def EmplReports (elist, totalchanged, cscount):
     ReportByPCEmpl (elist, cscount)
     ReportByELChanged (elist, totalchanged)
-    ReportByESOBs (elist)
+    #ReportByESOBs (elist)
     ReportByEHackers (elist)
 
 def DevBugReports (hlist, totalbugs):
