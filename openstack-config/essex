@@ -1,0 +1,7 @@
+# project revisions
+nova 2011.3..2012.1
+glance 2011.3..2012.1
+swift 1.4.3..1.4.8
+keystone 2011.3..2012.1
+horizon 2011.3..2012.1
+quantum 2011.3..2012.1

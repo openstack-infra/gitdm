@@ -1,0 +1,26 @@
+To generate the log used for input:
+
+  $> grep -v '^#' openstack-config/essex | \
+      while read project revisions; do \
+       (cd ~/git/openstack/$project; \
+        git fetch origin 2>/dev/null; \
+        git log --no-merges --numstat -M --find-copies-harder $revisions); \
+      done > log.txt
+
+I then manually deleted the translation imports from the
+'OpenStack Jenkins' user.
+
+The EmailAliases file was created with this horror:
+
+  $> for p in nova glance swift horizon; do cat ~/git/openstack/$p/.mailmap; done | \
+      grep -v '^#' | sed 's/^[^<]*<\([^>]*\)>/\1/' | \
+      grep '<.*>' | sed -e 's/[<>]/ /g' | \
+      awk '{if ($3 != "") { print $3" "$1 } else {print $2" "$1}}' | \
+      sort | uniq > aliases
+
+with the only exception that I've tweaked Soren's canonical
+email address to be is linux2go one, to fix a git-dm traceback.
+
+To generate the stats I did:
+
+  $> python ./gitdm -l 20 -n < log.txt
