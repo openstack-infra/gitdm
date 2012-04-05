@@ -24,3 +24,43 @@ email address to be is linux2go one, to fix a git-dm traceback.
 To generate the stats I did:
 
   $> python ./gitdm -l 20 -n < log.txt
+
+== Launchpad ==
+
+To get every email address we know about:
+
+  $> grep -v '^#' openstack-config/essex | \
+      while read project revisions; do \
+        cd ~/git/openstack/$project; \
+        git log | awk -F '[<>]' '/^Author:/ {print $2}'; \
+      done | sort | uniq | grep -v '\((none)\|\.local\)$' > tmp
+  $> sed 's/ /\n/' < openstack-config/aliases >> tmp
+  $> (sort | uniq | grep -v '\((none)\|\.local\)$') < tmp > emails.txt
+
+To map those to launchpad names:
+
+  $> ./tools/with_venv.sh python launchpad/map-email-to-lp-name.py \
+       $(cat emails.txt) > openstack-config/launchpad-ids.txt
+
+To generate a list of bugs:
+
+  $> grep -v '^#' openstack-config/essex | \
+      while read project revisions; do \
+        ./tools/with_venv.sh python ./launchpad/buglist.py $project essex; \
+      done > buglist.txt
+
+Then to include the email addresses in the buglist:
+
+  $> while read id $date person; do \
+       emails=$(awk "/^$person / {print \$2}" openstack-config/launchpad-ids.txt); \
+       echo $id $person $date $emails; \
+     done < buglist.txt > buglist-full.txt
+
+To generate the stats, I did:
+
+  $> grep -v '<unknown>' buglist-full.txt | python ./lpdm -l 20
+
+Launchpad API docs are here:
+
+  https://launchpad.net/+apidoc/1.0.html
+  https://help.launchpad.net/API/launchpadlib
