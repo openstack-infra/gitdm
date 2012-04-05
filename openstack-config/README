@@ -65,3 +65,46 @@ Launchpad API docs are here:
 
   https://launchpad.net/+apidoc/1.0.html
   https://help.launchpad.net/API/launchpadlib
+
+== Gerrit ==
+
+First, generate a list of Change-Ids:
+
+  $> grep -v '^#' openstack-config/essex | \
+      while read project revisions; do \
+       (cd ~/git/openstack/$project; \
+        git fetch origin 2>/dev/null; \
+        git log $revisions); \
+      done | \
+        awk '/^    Change-Id: / { print $2 }' | \
+        split -l 100 -d - essex-change-ids-
+
+The output is split across files of 100 lines each because gerrit's
+query will only return 500 results at a time.
+
+Now, we generate a raw json query result:
+
+  $> for f in essex-change-ids-??; do
+        ssh -p 29418 review.openstack.org \
+            gerrit query --all-approvals --format=json \
+                $(awk -v ORS=" OR "  '{print}' $f | sed 's/ OR $//') ; \
+      done > essex-reviews.txt
+
+Next, generate a list of commits:
+
+  $> grep -v '^#' openstack-config/essex | \
+      while read project revisions; do \
+       (cd ~/git/openstack/$project; \
+        git fetch origin 2>/dev/null; \
+        git log --pretty=format:%H $revisions); \
+      done > essex-commits.txt
+
+Now parse the json into a list of reviewers:
+
+  $> python gerrit/parse-reviews.py \
+       essex-commits.txt openstack-config/launchpad-ids.txt \
+       < essex-reviews.txt  > essex-reviewers.txt
+
+Finally, generate the stats with:
+
+  $> python ./gerritdm -l 20 < essex-reviewers.txt

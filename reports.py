@@ -232,6 +232,25 @@ def ReportByRevs (hlist):
             break
     EndReport ()
 
+def CompareRevsEmpl (e1, e2):
+    return len (e2.reviews) - len (e1.reviews)
+
+def ReportByRevsEmpl (elist):
+    elist.sort (CompareRevsEmpl)
+    totalrevs = 0
+    for e in elist:
+        totalrevs += len (e.reviews)
+    count = 0
+    BeginReport ('Top reviewers by employer (total %d)' % totalrevs)
+    for e in elist:
+        scount = len (e.reviews)
+        if scount > 0:
+            ReportLine (e.name, scount, (scount*100.0)/totalrevs)
+        count += 1
+        if count >= ListCount:
+            break
+    EndReport ()
+
 #
 # tester reporting.
 #
@@ -376,6 +395,12 @@ def DevBugReports (hlist, totalbugs):
 
 def EmplBugReports (elist, totalbugs):
     ReportByBCEmpl (elist, totalbugs)
+
+def DevReviews (hlist, totalreviews):
+    ReportByRevs (hlist)
+
+def EmplReviews (elist, totalreviews):
+    ReportByRevsEmpl (elist)
 
 def ReportByFileType (hacker_list):
     total = {}

@@ -129,6 +129,7 @@ class Employer:
         self.added = self.removed = self.count = self.changed = 0
         self.sobs = 0
         self.bugsfixed = [ ]
+        self.reviews = [ ]
         self.hackers = [ ]
 
     def AddCSet (self, patch):
@@ -146,6 +147,11 @@ class Employer:
         self.bugsfixed.append(bug)
         if bug.owner not in self.hackers:
             self.hackers.append (bug.owner)
+
+    def AddReview (self, reviewer):
+        self.reviews.append(reviewer)
+        if reviewer not in self.hackers:
+            self.hackers.append (reviewer)
 
 Employers = { }
 
