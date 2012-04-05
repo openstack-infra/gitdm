@@ -22,6 +22,7 @@ andy-southgate andy.southgate@citrix.com
 annegentle anne@openstack.org
 anotherjesse anotherjesse@gmail.com
 apevec apevec@redhat.com
+armando-migliaccio armamig@gmail.com
 asakhnov asakhnov@mirantis.com
 asbjorn-sannes asbjorn.sannes@interhost.no
 asomya asomya@cisco.com
@@ -318,6 +319,7 @@ xtoddx xtoddx@gmail.com
 xyj-asmy xyj.asmy@gmail.com
 yamahata yamahata@valinux.co.jp
 yinliu2 yinliu2@cisco.com
+yogesh-srikrishnan yogesh.srikrishnan@rackspace.com
 yorik-sar yorik.sar@gmail.com
 tamura-yoshiaki yoshi@midokura.jp
 yunmao yunmao@gmail.com

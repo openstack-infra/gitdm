@@ -35,6 +35,7 @@ To get every email address we know about:
         git log | awk -F '[<>]' '/^Author:/ {print $2}'; \
       done | sort | uniq | grep -v '\((none)\|\.local\)$' > tmp
   $> sed 's/ /\n/' < openstack-config/aliases >> tmp
+  $> sed 's/ /\n/' < openstack-config/other-aliases >> tmp
   $> (sort | uniq | grep -v '\((none)\|\.local\)$') < tmp > emails.txt
 
 To map those to launchpad names:
