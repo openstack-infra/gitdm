@@ -5,8 +5,8 @@
 #
 # This code is part of the LWN git data miner.
 #
-# Copyright 2007-11 Eklektix, Inc.
-# Copyright 2007-11 Jonathan Corbet <corbet@lwn.net>
+# Copyright 2007-12 Eklektix, Inc.
+# Copyright 2007-12 Jonathan Corbet <corbet@lwn.net>
 # Copyright 2011 Germán Póo-Caamaño <gpoo@gnome.org>
 #
 # This file may be distributed under the terms of the GNU General
@@ -43,6 +43,7 @@ DirName = ''
 Aggregate = 'month'
 Numstat = 0
 ReportByFileType = 0
+ReportUnknowns = False
 
 #
 # Options:
@@ -60,6 +61,7 @@ ReportByFileType = 0
 # -r pattern	Restrict to files matching pattern
 # -s		Ignore author SOB lines
 # -u		Map unknown employers to '(Unknown)'
+# -U 		Dump unknown hackers in report
 # -x file.csv   Export raw statistics as CSV
 # -w        Aggregrate the raw statistics by weeks instead of months
 # -y            Aggregrate the raw statistics by years instead of months
@@ -69,9 +71,9 @@ def ParseOpts ():
     global MapUnknown, DevReports
     global DateStats, AuthorSOBs, FileFilter, AkpmOverLt, DumpDB
     global CFName, CSVFile, CSVPrefix,DirName, Aggregate, Numstat
-    global ReportByFileType
+    global ReportByFileType, ReportUnknowns
 
-    opts, rest = getopt.getopt (sys.argv[1:], 'ab:dc:Dh:l:no:p:r:stuwx:yz')
+    opts, rest = getopt.getopt (sys.argv[1:], 'ab:dc:Dh:l:no:p:r:stUuwx:yz')
     for opt in opts:
         if opt[0] == '-a':
             AkpmOverLt = 1
@@ -102,6 +104,8 @@ def ParseOpts ():
             ReportByFileType = 1
         elif opt[0] == '-u':
             MapUnknown = 1
+        elif opt[0] == '-U':
+            ReportUnknowns = True
         elif opt[0] == '-x':
             CSVFile = open (opt[1], 'w')
             print "open output file " + opt[1] + "\n"
@@ -492,6 +496,8 @@ if CSVFile:
 
 if DevReports:
     reports.DevReports (hlist, TotalChanged, CSCount, TotalRemoved)
+if ReportUnknowns:
+    reports.ReportUnknowns(hlist, CSCount)
 reports.EmplReports (elist, TotalChanged, CSCount)
 
 if ReportByFileType and Numstat:

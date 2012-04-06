@@ -3,8 +3,8 @@
 #
 # This code is part of the LWN git data miner.
 #
-# Copyright 2007-11 Eklektix, Inc.
-# Copyright 2007-11 Jonathan Corbet <corbet@lwn.net>
+# Copyright 2007-12 Eklektix, Inc.
+# Copyright 2007-12 Jonathan Corbet <corbet@lwn.net>
 #
 # This file may be distributed under the terms of the GNU General
 # Public License, version 2.
@@ -58,6 +58,10 @@ TRow = '''    <tr class="%s">
 <td>%s</td><td align="right">%d</td><td align="right">%.1f%%</td></tr>
 '''
 
+TRowStr = '''    <tr class="%s">
+<td>%s</td><td align="right">%d</td><td>%s</td></tr>
+'''
+
 def ReportLine (text, count, pct):
     global HTMLclass
     if count == 0:
@@ -65,6 +69,15 @@ def ReportLine (text, count, pct):
     Outfile.write ('%-25s %4d (%.1f%%)\n' % (text, count, pct))
     if HTMLfile:
         HTMLfile.write (TRow % (HClasses[HTMLclass], text, count, pct))
+        HTMLclass ^= 1
+
+def ReportLineStr (text, count, extra):
+    global HTMLclass
+    if count == 0:
+        return
+    Outfile.write ('%-25s %4d %s\n' % (text, count, extra))
+    if HTMLfile:
+        HTMLfile.write (TRowStr % (HClasses[HTMLclass], text, count, extra))
         HTMLclass ^= 1
 
 def EndReport ():
@@ -284,6 +297,34 @@ def ReportByRepCreds (hlist):
             break
     EndReport ()
 
+#
+# Versions.
+#
+def CompareVersionCounts (h1, h2):
+    if h1.versions and h2.versions:
+        return len (h2.versions) - len (h1.versions)
+    if h2.versions:
+        return 1
+    if h1.versions:
+        return -1
+    return 0
+
+def MissedVersions (hv, allv):
+    missed = [v for v in allv if v not in hv]
+    missed.reverse ()
+    return ' '.join (missed)
+
+def ReportVersions (hlist):
+    hlist.sort (CompareVersionCounts)
+    BeginReport ('Developers represented in the most kernel versions')
+    count = 0
+    allversions = hlist[0].versions
+    for h in hlist:
+        ReportLineStr (h.name, len (h.versions), MissedVersions (h.versions, allversions))
+        count += 1
+        if count >= ListCount:
+            break
+    EndReport ()
 
 
 def CompareESOBs (e1, e2):
@@ -340,6 +381,33 @@ def EmplReports (elist, totalchanged, cscount):
     ReportByELChanged (elist, totalchanged)
     ReportByESOBs (elist)
     ReportByEHackers (elist)
+
+#
+# Who are the unknown hackers?
+#
+def IsUnknown(h):
+    empl = h.employer[0][0][1].name
+    return h.email[0] == empl or empl == '(Unknown)'
+
+def ReportUnknowns(hlist, cscount):
+    #
+    # Trim the list to just the unknowns; try to work properly whether
+    # mapping to (Unknown) is happening or not.
+    #
+    ulist = [ h for h in hlist if IsUnknown(h) ]
+    ulist.sort(ComparePCount)
+    count = 0
+    BeginReport('Developers with unknown affiliation')
+    for h in ulist:
+        pcount = len(h.patches)
+        if pcount > 0:
+            ReportLine(h.name, pcount, (pcount*100.0)/cscount)
+            count += 1
+        if count >= ListCount:
+            break
+    EndReport()
+
+
 
 def ReportByFileType (hacker_list):
     total = {}

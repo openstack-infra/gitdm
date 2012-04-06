@@ -21,7 +21,8 @@ import re
 _pemail = r'\s+"?([^<"]+)"?\s<([^>]+)>' # just email addr + name
 
 patterns = {
-    'commit': re.compile (r'^commit ([0-9a-f ]+)$'),
+    'tagcommit': re.compile (r'^commit ([\da-f]+) .*tag: (v[23]\.\d(\.\d\d?)?)'),
+    'commit': re.compile (r'^commit ([0-9a-f ]+)'),
     'author': re.compile (r'^Author:' + _pemail + '$'),
     'signed-off-by': re.compile (r'^\s+Signed-off-by:' + _pemail + '.*$'),
     'merge': re.compile (r'^Merge:.*$'),
