@@ -25,6 +25,7 @@ class Hacker:
         self.tested = [ ]
         self.reports = [ ]
         self.testcred = self.repcred = 0
+        self.versions = [ ]
 
     def addemail (self, email, elist):
         self.email.append (email)
@@ -45,6 +46,12 @@ class Hacker:
         self.removed += patch.removed
         self.patches.append (patch)
 
+    #
+    # Note that the author is represented in this release.
+    #
+    def addversion (self, release):
+        if release not in self.versions:
+            self.versions.append (release)
     #
     # There's got to be a better way.
     #
@@ -115,6 +122,17 @@ def DumpDB ():
             for date, empl in h.employer[i]:
                 out.write ('\t\t %d-%d-%d %s\n' % (date.year, date.month, date.day,
                                                  empl.name))
+        if h.versions:
+            out.write ('\tVersions: %s\n' % ','.join (h.versions))
+
+#
+# Hack: The first visible tag comes a ways into the stream; when we see it,
+# push it backward through the changes we've already seen.
+#
+def ApplyFirstTag (tag):
+    for n in HackersByName.keys ():
+        if HackersByName[n].versions:
+            HackersByName[n].versions = [tag]
 
 #
 # Employer info.
@@ -277,6 +295,9 @@ def MapToEmployer (email, unknown = 0):
             return EmailToEmployer[addr]
         except KeyError:
             pass
+    #
+    # We don't know who they work for.
+    #
     if unknown:
         return [(nextyear, GetEmployer ('(Unknown)'))]
     return [(nextyear, GetEmployer (email))]
@@ -285,3 +306,4 @@ def MapToEmployer (email, unknown = 0):
 def LookupEmployer (email, mapunknown = 0):
     elist = MapToEmployer (email, mapunknown)
     return elist # GetEmployer (ename)
+
