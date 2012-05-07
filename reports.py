@@ -34,6 +34,11 @@ def Write (stuff):
     Outfile.write (stuff)
 
 
+def Pct(a, b):
+    if b == 0:
+        return 0.0
+    else:
+        return (a*100.0)/b
 
 #
 # HTML output support stuff.
@@ -88,12 +93,12 @@ def ReportByPCount (hlist, cscount):
         changed = max(h.added, h.removed)
         delta = h.added - h.removed
         if pcount > 0:
-            ReportLine (h.name, pcount, (pcount*100.0)/cscount)
+            ReportLine (h.name, pcount, Pct(pcount, cscount))
             reported += pcount
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of changesets' % ((reported*100.0)/cscount, ))
+    EndReport ('Covers %f%% of changesets' % (Pct(reported, cscount), ))
 
 def CompareBCount (h1, h2):
     return len (h2.bugsfixed) - len (h1.bugsfixed)
@@ -105,12 +110,12 @@ def ReportByBCount (hlist, totalbugs):
     for h in hlist:
         bcount = len (h.bugsfixed)
         if bcount > 0:
-            ReportLine (h.name, bcount, (bcount*100.0)/totalbugs)
+            ReportLine (h.name, bcount, Pct(bcount, totalbugs))
             reported += bcount
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of bugs' % ((reported*100.0)/totalbugs, ))
+    EndReport ('Covers %f%% of bugs' % Pct(reported, totalbugs))
 
 def CompareLChanged (h1, h2):
     return max(h2.added, h2.removed) - max(h1.added, h1.removed)
@@ -124,12 +129,12 @@ def ReportByLChanged (hlist, totalchanged):
         changed = max(h.added, h.removed)
         delta = h.added - h.removed
         if (h.added + h.removed) > 0:
-            ReportLine (h.name, changed, (changed*100.0)/totalchanged)
+            ReportLine (h.name, changed, Pct(changed, totalchanged))
             reported += changed
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of changes' % ((reported*100.0)/totalchanged, ))
+    EndReport ('Covers %f%% of changes' % (Pct(reported, totalchanged), ))
             
 def CompareLRemoved (h1, h2):
     return (h2.removed - h2.added) - (h1.removed - h1.added)
@@ -143,12 +148,12 @@ def ReportByLRemoved (hlist, totalremoved):
         changed = max(h.added, h.removed)
         delta = h.added - h.removed
         if delta < 0:
-            ReportLine (h.name, -delta, (-delta*100.0)/totalremoved)
+            ReportLine (h.name, -delta, Pct(-delta, totalremoved))
             reported += -delta
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of changes' % ((reported*100.0)/totalremoved, ))
+    EndReport ('Covers %f%% of changes' % (Pct(reported, totalremoved), ))
 
 def CompareEPCount (e1, e2):
     return e2.count - e1.count
@@ -159,12 +164,12 @@ def ReportByPCEmpl (elist, cscount):
     BeginReport ('Top changeset contributors by employer')
     for e in elist:
         if e.count != 0:
-            ReportLine (e.name, e.count, (e.count*100.0)/cscount)
+            ReportLine (e.name, e.count, Pct(e.count, cscount))
             total_pcount += e.count
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of changesets' % ((total_pcount*100.0)/cscount, ))
+    EndReport ('Covers %f%% of changesets' % (Pct(total_pcount, cscount), ))
 
 def CompareEBCount (e1, e2):
     return len (e2.bugsfixed) - len (e1.bugsfixed)
@@ -175,12 +180,12 @@ def ReportByBCEmpl (elist, totalbugs):
     BeginReport ('Top bugs fixed by employer')
     for e in elist:
         if len(e.bugsfixed) != 0:
-            ReportLine (e.name, len(e.bugsfixed), (len(e.bugsfixed)*100.0)/totalbugs)
+            ReportLine (e.name, len(e.bugsfixed), Pct(len(e.bugsfixed), totalbugs))
             reported += len(e.bugsfixed)
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of bugs' % ((reported*100.0)/totalbugs, ))
+    EndReport ('Covers %f%% of bugs' % (Pct(reported, totalbugs, )))
 
 def CompareELChanged (e1, e2):
     return e2.changed - e1.changed
@@ -191,12 +196,12 @@ def ReportByELChanged (elist, totalchanged):
     BeginReport ('Top lines changed by employer')
     for e in elist:
         if e.changed != 0:
-            ReportLine (e.name, e.changed, (e.changed*100.0)/totalchanged)
+            ReportLine (e.name, e.changed, Pct(e.changed, totalchanged))
             reported += e.changed
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of changes' % ((reported*100.0)/totalchanged, ))
+    EndReport ('Covers %f%% of changes' % (Pct(reported, totalchanged), ))
 
 
 
@@ -213,12 +218,12 @@ def ReportBySOBs (hlist):
     for h in hlist:
         scount = len (h.signoffs)
         if scount > 0:
-            ReportLine (h.name, scount, (scount*100.0)/totalsobs)
+            ReportLine (h.name, scount, Pct(scount, totalsobs))
             reported += scount
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of signoffs' % ((reported*100.0)/totalsobs, ))
+    EndReport ('Covers %f%% of signoffs' % (Pct(reported, totalsobs), ))
 
 #
 # Reviewer reporting.
@@ -236,12 +241,12 @@ def ReportByRevs (hlist):
     for h in hlist:
         scount = len (h.reviews)
         if scount > 0:
-            ReportLine (h.name, scount, (scount*100.0)/totalrevs)
+            ReportLine (h.name, scount, Pct(scount, totalrevs))
             reported += scount
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of reviews' % ((reported*100.0)/totalrevs, ))
+    EndReport ('Covers %f%% of reviews' % (Pct(reported, totalrevs), ))
 
 def CompareRevsEmpl (e1, e2):
     return len (e2.reviews) - len (e1.reviews)
@@ -256,12 +261,12 @@ def ReportByRevsEmpl (elist):
     for e in elist:
         scount = len (e.reviews)
         if scount > 0:
-            ReportLine (e.name, scount, (scount*100.0)/totalrevs)
+            ReportLine (e.name, scount, Pct(scount, totalrevs))
             reported += scount
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of reviews' % ((reported*100.0)/totalrevs, ))
+    EndReport ('Covers %f%% of reviews' % (Pct(reported, totalrevs), ))
 
 #
 # tester reporting.
@@ -279,12 +284,12 @@ def ReportByTests (hlist):
     for h in hlist:
         scount = len (h.tested)
         if scount > 0:
-            ReportLine (h.name, scount, (scount*100.0)/totaltests)
+            ReportLine (h.name, scount, Pct(scount, totaltests))
             reported += scount
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of test credits' % ((reported*100.0)/totaltests, ))
+    EndReport ('Covers %f%% of test credits' % (Pct(reported, totaltests), ))
 
 def CompareTestCred (h1, h2):
     return h2.testcred - h1.testcred
@@ -298,12 +303,12 @@ def ReportByTestCreds (hlist):
     BeginReport ('Developers who gave the most tested-by credits (total %d)' % totaltests)
     for h in hlist:
         if h.testcred > 0:
-            ReportLine (h.name, h.testcred, (h.testcred*100.0)/totaltests)
+            ReportLine (h.name, h.testcred, Pct(h.testcred, totaltests))
             reported += h.testcred
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of test credits' % ((reported*100.0)/totaltests, ))
+    EndReport ('Covers %f%% of test credits' % (Pct(reported, totaltests), ))
 
 
 
@@ -323,12 +328,12 @@ def ReportByReports (hlist):
     for h in hlist:
         scount = len (h.reports)
         if scount > 0:
-            ReportLine (h.name, scount, (scount*100.0)/totalreps)
+            ReportLine (h.name, scount, Pct(scount, totalreps))
             report += scount
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of report credits' % ((reported*100.0)/totalreps, ))
+    EndReport ('Covers %f%% of report credits' % (Pct(reported, totalreps), ))
 
 def CompareRepCred (h1, h2):
     return h2.repcred - h1.repcred
@@ -342,12 +347,12 @@ def ReportByRepCreds (hlist):
     BeginReport ('Developers who gave the most report credits (total %d)' % totalreps)
     for h in hlist:
         if h.repcred > 0:
-            ReportLine (h.name, h.repcred, (h.repcred*100.0)/totalreps)
+            ReportLine (h.name, h.repcred, Pct(h.repcred, totalreps))
             reported += h.repcred
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of report credits' % ((reported*100.0)/totalreps, ))
+    EndReport ('Covers %f%% of report credits' % (Pct(reported, totalreps), ))
 
 
 
@@ -363,12 +368,12 @@ def ReportByESOBs (elist):
     BeginReport ('Employers with the most signoffs (total %d)' % totalsobs)
     for e in elist:
         if e.sobs > 0:
-            ReportLine (e.name, e.sobs, (e.sobs*100.0)/totalsobs)
+            ReportLine (e.name, e.sobs, Pct(e.sobs, totalsobs))
             reported += e.sobs
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of signoffs' % ((reported*100.0)/totalsobs, ))
+    EndReport ('Covers %f%% of signoffs' % (Pct(reported, totalsobs), ))
    
 def CompareHackers (e1, e2):
     return len (e2.hackers) - len (e1.hackers)
@@ -383,12 +388,12 @@ def ReportByEHackers (elist):
     for e in elist:
         nhackers = len (e.hackers)
         if nhackers > 0:
-            ReportLine (e.name, nhackers, (nhackers*100.0)/totalhackers)
+            ReportLine (e.name, nhackers, Pct(nhackers, totalhackers))
             reported += nhackers
         count += 1
         if count >= ListCount:
             break
-    EndReport ('Covers %f%% of hackers' % ((reported*100.0)/totalhackers, ))
+    EndReport ('Covers %f%% of hackers' % (Pct(reported, totalhackers), ))
 
 
 def DevReports (hlist, totalchanged, cscount, totalremoved):
