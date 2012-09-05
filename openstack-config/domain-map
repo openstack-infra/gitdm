@@ -1,5 +1,6 @@
 # domain  employer  [< yyyy-mm-dd]
-ansolabs.com Rackspace
+ansolabs.com Rackspace < 2012-07-20
+ansolabos.com Nebula
 atomia.com Atomia
 attinteractive.com AT&T
 canonical.com Canonical
@@ -29,11 +30,6 @@ netapp.com NetApp
 nicira.com Nicira
 nimbisservices.com Nimbis Services
 ntt.co.jp NTT
-ntt.com NTT
-nttdata.com NTT
-nttdata.co.jp NTT
-nttmcl.com NTT
-vertex.co.in NTT
 pistoncloud.com Piston Cloud
 rackspace.com Rackspace
 radware.com Radware
