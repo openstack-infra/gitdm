@@ -11,14 +11,14 @@ armando.migliaccio@citrix.com Armando.Migliaccio@eu.citrix.com
 bcwaldon@gmail.com brian.waldon@rackspace.com
 bfschott@gmail.com bschott@isi.edu
 brian.lamar@gmail.com brian.lamar@rackspace.com
+cbehrens+gerrit@codestud.com cbehrens@codestud.com
 chiradeep@chiradeep-lt2 chiradeep@cloud.com
 chris.behrens@rackspace.com cbehrens@codestud.com
-cbehrens+gerrit@codestud.com cbehrens@codestud.com
 chris@slicehost.com chris@pistoncloud.com
 chuck.short@canonical.com zulcss@ubuntu.com
-clayg@clayg-desktop clay.gerrard@gmail.com
 clay.gerrard@gmail.com clay.gerrard@gmail.com
 clay.gerrard@rackspace.com clay.gerrard@gmail.com
+clayg@clayg-desktop clay.gerrard@gmail.com
 corvus@gnu.org jeblair@hp.com
 corvus@inaugust.com jeblair@hp.com
 cory.wright@rackspace.com corywright@gmail.com
@@ -52,7 +52,6 @@ jesse@dancelamb anotherjesse@gmail.com
 jesse@gigantor.local anotherjesse@gmail.com
 jesse@ubuntu anotherjesse@gmail.com
 jmckenty@joshua-mckentys-macbook-pro.local jmckenty@gmail.com
-joshua@pistoncloud.com jmckenty@gmail.com
 jmckenty@yyj-dhcp171.corp.flock.com jmckenty@gmail.com
 joe@cloudscaling.com joe@swiftstack.com
 johannes@compute3.221.st johannes.erdfelt@rackspace.com
@@ -60,6 +59,7 @@ johannes@erdfelt.com johannes.erdfelt@rackspace.com
 john.dickinson@rackspace.com me@not.mn
 josh.kearney@rackspace.com josh@jk0.org
 joshua.mckenty@nasa.gov jmckenty@gmail.com
+joshua@pistoncloud.com jmckenty@gmail.com
 jpipes@serialcoder jaypipes@gmail.com
 jsuh@bespin jsuh@isi.edu
 justinsb@justinsb-desktop justin@fathomdb.com
@@ -78,7 +78,8 @@ michael.barton@rackspace.com mike@weirdlooking.com
 michael.still@canonical.com mikal@stillhq.com
 mike-launchpad@weirdlooking.com mike@weirdlooking.com
 mordred@hudson mordred@inaugust.com
-nachi@nttmcl.com nati.ueno@gmail.com ueno.nachi@lab.ntt.co.jp
+nachi@nttmcl.com ueno.nachi@lab.ntt.co.jp
+nati.ueno@gmail.com ueno.nachi@lab.ntt.co.jp
 naveed.massjouni@rackspace.com naveedm9@gmail.com
 nelson@nelson-laptop russ@crynwr.com
 nirmal.ranganathan@rackspace.com rnirmal@gmail.com
@@ -86,8 +87,8 @@ nirmal.ranganathan@rackspace.coom rnirmal@gmail.com
 nova@u4 ueno.nachi@lab.ntt.co.jp
 nsokolov@griddynamics.net nsokolov@griddynamics.com
 openstack@lab.ntt.co.jp ueno.nachi@lab.ntt.co.jp
-paul@substation9.com paul@openstack.org
 paul.voccio@rackspace.com paul@openstack.org
+paul@substation9.com paul@openstack.org
 pvoccio@castor.local paul@openstack.org
 rclark@chat-blanc rick@openstack.org
 rick.harris@rackspace.com rconradharris@gmail.com
