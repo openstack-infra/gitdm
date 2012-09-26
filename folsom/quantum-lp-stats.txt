@@ -1,0 +1,48 @@
+Processed 263 bugs from 32 developers
+22 employers found
+
+Developers with the most bugs fixed
+garyk                       51 (19.4%)
+danwent                     30 (11.4%)
+salvatore-orlando           26 (9.9%)
+markmcclain                 18 (6.8%)
+nati-ueno                   16 (6.1%)
+amotoki                     16 (6.1%)
+gongysh                     15 (5.7%)
+arosen                      12 (4.6%)
+rkukura                     11 (4.2%)
+ljjjustin                    7 (2.7%)
+snaiksat                     7 (2.7%)
+maru                         6 (2.3%)
+zyluo                        6 (2.3%)
+ncode                        6 (2.3%)
+Unknown hacker               5 (1.9%)
+ykaneko0929                  4 (1.5%)
+heut2008                     3 (1.1%)
+prasad-tanay                 3 (1.1%)
+rohitagarwalla               2 (0.8%)
+yusuke                       2 (0.8%)
+Covers 93.536122% of bugs
+
+Top bugs fixed by employer
+Radware                     51 (19.4%)
+Nicira                      42 (16.0%)
+Citrix                      26 (9.9%)
+NTT                         19 (7.2%)
+DreamHost                   18 (6.8%)
+NEC                         16 (6.1%)
+IBM                         16 (6.1%)
+SINA                        13 (4.9%)
+Red Hat                     12 (4.6%)
+Cisco Systems               12 (4.6%)
+Locaweb                      6 (2.3%)
+Internap                     6 (2.3%)
+unknown@hacker.net           5 (1.9%)
+ykaneko0929@gmail.com        4 (1.5%)
+Rackspace                    3 (1.1%)
+prasad.tanay@gmail.com       3 (1.1%)
+Intel                        3 (1.1%)
+HP                           2 (0.8%)
+VA Linux                     2 (0.8%)
+mathieu.rohon@gmail.com      2 (0.8%)
+Covers 99.239544% of bugs

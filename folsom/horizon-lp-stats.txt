@@ -1,0 +1,42 @@
+Processed 178 bugs from 23 developers
+14 employers found
+
+Developers with the most bugs fixed
+gabriel-hurley              80 (44.9%)
+ttrifonov                   23 (12.9%)
+john-postlethwait           12 (6.7%)
+kelsey-tripp                11 (6.2%)
+Unknown hacker               8 (4.5%)
+ke-wu                        8 (4.5%)
+tres                         8 (4.5%)
+jakedahn                     4 (2.2%)
+lin-hua-cheng                4 (2.2%)
+amotoki                      3 (1.7%)
+sorrison                     3 (1.7%)
+jpichon                      2 (1.1%)
+simplylizz                   2 (1.1%)
+bcwaldon                     1 (0.6%)
+rkhardalian                  1 (0.6%)
+ttx                          1 (0.6%)
+markmc                       1 (0.6%)
+jaypipes                     1 (0.6%)
+devcamcar                    1 (0.6%)
+paul-mcmillan                1 (0.6%)
+Covers 98.314607% of bugs
+
+Top bugs fixed by employer
+Nebula                     125 (70.2%)
+Everbread                   23 (12.9%)
+unknown@hacker.net           8 (4.5%)
+HP                           4 (2.2%)
+NEC                          3 (1.7%)
+Rackspace                    3 (1.7%)
+University of Melbourne      3 (1.7%)
+julie.pichon@gmail.com       2 (1.1%)
+Mirantis                     2 (1.1%)
+Red Hat                      1 (0.6%)
+IBM                          1 (0.6%)
+Metacloud                    1 (0.6%)
+AT&T                         1 (0.6%)
+emmasteimann@gmail.com       1 (0.6%)
+Covers 100.000000% of bugs

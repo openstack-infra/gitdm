@@ -1,0 +1,34 @@
+Processed 39 bugs from 17 developers
+9 employers found
+
+Developers with the most bugs fixed
+Unknown hacker               4 (10.3%)
+gholt                        4 (10.3%)
+dan-prince                   4 (10.3%)
+pandemicsyn                  4 (10.3%)
+morita-kazutaka              3 (7.7%)
+iryoung                      3 (7.7%)
+mapleoin                     3 (7.7%)
+darrellb                     2 (5.1%)
+alexyang                     2 (5.1%)
+vuntz                        2 (5.1%)
+ttx                          2 (5.1%)
+notmyname                    1 (2.6%)
+greglange                    1 (2.6%)
+chmouel                      1 (2.6%)
+francois-charlier            1 (2.6%)
+annegentle                   1 (2.6%)
+zaitcev                      1 (2.6%)
+Covers 100.000000% of bugs
+
+Top bugs fixed by employer
+Rackspace                   13 (33.3%)
+Red Hat                      5 (12.8%)
+SUSE                         5 (12.8%)
+unknown@hacker.net           4 (10.3%)
+SwiftStack                   3 (7.7%)
+morita.kazutaka@gmail.com    3 (7.7%)
+iryoung@gmail.com            3 (7.7%)
+SINA                         2 (5.1%)
+eNovance                     1 (2.6%)
+Covers 100.000000% of bugs
