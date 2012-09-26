@@ -1,7 +1,7 @@
 #!/bin/bash
 
 GITBASE=~/git/openstack
-RELEASE=essex
+RELEASE=folsom
 BASEDIR=$(pwd)
 CONFIGDIR=$(pwd)/openstack-config
 TEMPDIR=$(mktemp -d $(pwd)/dmtmp-XXXXXX)
