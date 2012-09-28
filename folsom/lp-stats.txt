@@ -21,7 +21,7 @@ markmc                      23 (1.6%)
 ttrifonov                   23 (1.6%)
 joe-gordon0                 21 (1.4%)
 amotoki                     21 (1.4%)
-russellb                    20 (1.3%)
+mikalstill                  20 (1.3%)
 Covers 53.270398% of bugs
 
 Top bugs fixed by employer
@@ -36,7 +36,7 @@ Nicira                      49 (3.3%)
 Canonical                   42 (2.8%)
 Citrix                      40 (2.7%)
 NTT                         36 (2.4%)
-HP                          34 (2.3%)
+HP                          35 (2.4%)
 SolidFire                   32 (2.2%)
 Everbread                   23 (1.6%)
 Cloudscaling                23 (1.6%)
@@ -45,4 +45,4 @@ NEC                         21 (1.4%)
 AT&T                        21 (1.4%)
 SUSE                        18 (1.2%)
 Intel                       13 (0.9%)
-Covers 90.559676% of bugs
+Covers 90.627107% of bugs
