@@ -123,6 +123,7 @@ fifieldt fifieldt@unimelb.edu.au
 francois-charlier francois.charlier@enovance.com
 freyes freyes@tty.cl
 fujita-tomonori-lab fujita.tomonori@lab.ntt.co.jp
+fungi fungi@yuggoth.org
 gabriel-hurley gabriel@strikeawe.com
 gandelman-a adam.gandelman@canonical.com
 gandelman-a adamg@canonical.com
@@ -191,6 +192,7 @@ jpichon julie.pichon@gmail.com
 jsavak joe.savak@rackspace.com
 jshepher jshepher@rackspace.com
 jsuh jsuh@isi.edu
+jtaylor jtaylor@ubuntu.com
 jtran jtran@attinteractive.com
 juergh juerg.haefliger@hp.com
 justin-fathomdb justin@fathomdb.com
@@ -261,6 +263,7 @@ oliver-leahy-l oliver.leahy@hp.com
 oubiwann duncan@dreamhost.com
 p-draigbrady P@draigBrady.com
 p-draigbrady pbrady@redhat.com
+pabelanger paul.belanger@polybeacon.com
 pandemicsyn florian.hines@gmail.com
 parthipan parthipan@hp.com
 paul-mcmillan paul.mcmillan@nebula.com
