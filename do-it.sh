@@ -1,7 +1,7 @@
 #!/bin/bash
 
 GITBASE=~/git/openstack
-RELEASE=folsom
+RELEASE=grizzly
 BASEDIR=$(pwd)
 CONFIGDIR=$(pwd)/openstack-config
 TEMPDIR=${TEMPDIR:-$(mktemp -d $(pwd)/dmtmp-XXXXXX)}
