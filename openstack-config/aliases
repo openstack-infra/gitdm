@@ -2,6 +2,7 @@
 # This is the email aliases file, mapping secondary addresses
 # onto a single, canonical address.
 #
+DaveWalker@ubuntu.com Dave.Walker@canonical.com
 adamg@canonical.com adam.gandelman@canonical.com
 admin@jakedahn.com jake@ansolabs.com
 amesserl@rackspace.com ant@openstack.org
@@ -20,15 +21,15 @@ chuck.short@canonical.com zulcss@ubuntu.com
 clay.gerrard@gmail.com clay.gerrard@gmail.com
 clay.gerrard@rackspace.com clay.gerrard@gmail.com
 clayg@clayg-desktop clay.gerrard@gmail.com
-jeblair@hp.com jeblair@openstack.org
 corvus@gnu.org jeblair@openstack.org
 corvus@inaugust.com jeblair@openstack.org
 cory.wright@rackspace.com corywright@gmail.com
 dan.prince@rackspace.com dprince@redhat.com
 danwent@dan-xs3-cs dan@nicira.com
 danwent@gmail.com dan@nicira.com
-DaveWalker@ubuntu.com Dave.Walker@canonical.com
+davanum@gmail.com dims@linux.vnet.ibm.com
 david.goetz@gmail.com david.goetz@rackspace.com
+david.hadas@gmail.com davidh@il.ibm.com
 devcamcar@illian.local devin.carlen@gmail.com
 devin@openstack.org devin.carlen@gmail.com
 devnull@brim.net gholt@rackspace.com
@@ -50,8 +51,8 @@ ialekseev@griddynamics.com ilyaalekseyev@acm.org
 ilya@oscloud.ru ilyaalekseyev@acm.org
 itoumsn@shayol itoumsn@nttdata.co.jp
 jake@markupisart.com jake@ansolabs.com
-james.blair@rackspace.com jeblair@hp.com
-jeblair@openstack.org jeblair@hp.com
+james.blair@rackspace.com jeblair@openstack.org
+jeblair@hp.com jeblair@openstack.org
 jesse@aire.local anotherjesse@gmail.com
 jesse@dancelamb anotherjesse@gmail.com
 jesse@gigantor.local anotherjesse@gmail.com
@@ -61,8 +62,8 @@ jmckenty@yyj-dhcp171.corp.flock.com jmckenty@gmail.com
 joe@cloudscaling.com joe@swiftstack.com
 johannes@compute3.221.st johannes.erdfelt@rackspace.com
 johannes@erdfelt.com johannes.erdfelt@rackspace.com
-john.garbutt@citrix.com john@johngarbutt.com
 john.dickinson@rackspace.com me@not.mn
+john.garbutt@citrix.com john@johngarbutt.com
 josh.kearney@rackspace.com josh@jk0.org
 joshua.mckenty@nasa.gov jmckenty@gmail.com
 joshua@pistoncloud.com jmckenty@gmail.com
