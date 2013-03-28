@@ -1,0 +1,41 @@
+Processed 63 bugs from 24 developers
+13 employers found
+
+Developers with the most bugs fixed
+torgomatic                  12 (19.0%)
+Unknown hacker              10 (15.9%)
+academicgareth               6 (9.5%)
+david-hadas                  5 (7.9%)
+darrellb                     5 (7.9%)
+litong01                     3 (4.8%)
+chmouel                      3 (4.8%)
+david-goetz                  2 (3.2%)
+jola-mirecka                 2 (3.2%)
+donagh-mccabe                1 (1.6%)
+cthier                       1 (1.6%)
+adriansmith                  1 (1.6%)
+zyluo                        1 (1.6%)
+yuan-zhou                    1 (1.6%)
+ywang19                      1 (1.6%)
+gholt                        1 (1.6%)
+peter-a-portante             1 (1.6%)
+annegentle                   1 (1.6%)
+soren                        1 (1.6%)
+broskos                      1 (1.6%)
+Covers 93.650794% of bugs
+
+Top bugs fixed by employer
+SwiftStack                  18 (28.6%)
+unknown@hacker.net          10 (15.9%)
+IBM                          8 (12.7%)
+academicgareth@gmail.com     6 (9.5%)
+Rackspace                    5 (7.9%)
+Red Hat                      3 (4.8%)
+HP                           3 (4.8%)
+eNovance                     3 (4.8%)
+Intel                        3 (4.8%)
+Internap                     1 (1.6%)
+Dell                         1 (1.6%)
+Cisco Systems                1 (1.6%)
+University of Melbourne      1 (1.6%)
+Covers 100.000000% of bugs

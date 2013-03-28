@@ -1,0 +1,48 @@
+Processed 145 bugs from 45 developers
+24 employers found
+
+Developers with the most bugs fixed
+john-griffith               27 (18.6%)
+Unknown hacker              14 (9.7%)
+avishay-il                  12 (8.3%)
+mate-lakat                   6 (4.1%)
+walter-boring                5 (3.4%)
+stephen-mulcahy              5 (3.4%)
+rushiagr                     5 (3.4%)
+thingee                      4 (2.8%)
+zhiteng-huang                4 (2.8%)
+dan-prince                   4 (2.8%)
+clay-gerrard                 4 (2.8%)
+treinish                     3 (2.1%)
+zhangchao010                 3 (2.1%)
+eharney                      3 (2.1%)
+sdague                       3 (2.1%)
+singn                        3 (2.1%)
+bswartz                      3 (2.1%)
+vishvananda                  2 (1.4%)
+flwang                       2 (1.4%)
+markmc                       2 (1.4%)
+Covers 78.620690% of bugs
+
+Top bugs fixed by employer
+SolidFire                   27 (18.6%)
+IBM                         23 (15.9%)
+unknown@hacker.net          14 (9.7%)
+Red Hat                     11 (7.6%)
+HP                          11 (7.6%)
+Rackspace                   11 (7.6%)
+NetApp                      11 (7.6%)
+DreamHost                    6 (4.1%)
+Citrix                       6 (4.1%)
+Intel                        5 (3.4%)
+Nebula                       3 (2.1%)
+zhangchao010@huawei.com      3 (2.1%)
+zrzhit@gmail.com             2 (1.4%)
+University of Melbourne      2 (1.4%)
+xuwenhao2008@gmail.com       1 (0.7%)
+corystone@gmail.com          1 (0.7%)
+Internap                     1 (0.7%)
+yugsuo@gmail.com             1 (0.7%)
+cgoncalves@av.it.pt          1 (0.7%)
+Metacloud                    1 (0.7%)
+Covers 97.241379% of bugs

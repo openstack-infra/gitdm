@@ -1,0 +1,47 @@
+Processed 125 bugs from 24 developers
+19 employers found
+
+Developers with the most bugs fixed
+gabriel-hurley              22 (17.6%)
+Unknown hacker              15 (12.0%)
+kspear                      13 (10.4%)
+jpichon                     13 (10.4%)
+lin-hua-cheng               11 (8.8%)
+ttrifonov                    8 (6.4%)
+mrunge                       7 (5.6%)
+vickymsee                    7 (5.6%)
+amotoki                      5 (4.0%)
+david-lyle                   5 (4.0%)
+arosen                       2 (1.6%)
+izbyshev                     2 (1.6%)
+ericpeterson-l               2 (1.6%)
+irsxyp                       2 (1.6%)
+bcwaldon                     2 (1.6%)
+nati-ueno                    1 (0.8%)
+sammiestoel                  1 (0.8%)
+hayashi                      1 (0.8%)
+rkhardalian                  1 (0.8%)
+nakamura-h                   1 (0.8%)
+Covers 96.800000% of bugs
+
+Top bugs fixed by employer
+Nebula                      22 (17.6%)
+Red Hat                     20 (16.0%)
+HP                          18 (14.4%)
+unknown@hacker.net          15 (12.0%)
+University of Melbourne     13 (10.4%)
+Everbread                    8 (6.4%)
+vickymsee@gmail.com          7 (5.6%)
+NEC                          6 (4.8%)
+irsxyp@gmail.com             2 (1.6%)
+Rackspace                    2 (1.6%)
+Nicira                       2 (1.6%)
+izbyshev@ispras.ru           2 (1.6%)
+NTT                          2 (1.6%)
+sammiestoel@gmail.com        1 (0.8%)
+jiangyong.hn@gmail.com       1 (0.8%)
+Metacloud                    1 (0.8%)
+Cloudscaling                 1 (0.8%)
+flaper87@gmail.com           1 (0.8%)
+academicgareth@gmail.com     1 (0.8%)
+Covers 100.000000% of bugs
