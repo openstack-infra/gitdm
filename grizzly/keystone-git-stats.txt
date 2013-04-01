@@ -1,11 +1,11 @@
-Processed 308 csets from 73 developers
+Processed 311 csets from 73 developers
 34 employers found
-A total of 28403 lines added, 17888 removed (delta 10515)
+A total of 28493 lines added, 17951 removed (delta 10542)
 
 Developers with the most changesets
-Dolph Mathews               71 (23.1%)
-Adam Young                  46 (14.9%)
-Ionuț Arțăriși          16 (5.2%)
+Dolph Mathews               72 (23.2%)
+Adam Young                  46 (14.8%)
+Ionuț Arțăriși          16 (5.1%)
 Yuriy Taraday               13 (4.2%)
 Henry Nash                  12 (3.9%)
 Dan Prince                  12 (3.9%)
@@ -23,13 +23,13 @@ Monty Taylor                 3 (1.0%)
 Zhongyue Luo                 3 (1.0%)
 Vishvananda Ishaya           3 (1.0%)
 long-wang                    3 (1.0%)
-Covers 77.922078% of changesets
+Covers 77.491961% of changesets
 
 Developers with the most changed lines
-Dolph Mathews             7422 (19.8%)
-Henry Nash                5822 (15.6%)
-Adam Young                4625 (12.4%)
-Guang Yee                 3316 (8.9%)
+Dolph Mathews             7453 (19.9%)
+Henry Nash                5822 (15.5%)
+Adam Young                4625 (12.3%)
+Guang Yee                 3316 (8.8%)
 Mark McLoughlin           2188 (5.8%)
 Tom Fifield               1462 (3.9%)
 Gordon Chung               917 (2.4%)
@@ -46,11 +46,11 @@ Allan Feid                 238 (0.6%)
 Jason Cannavale            236 (0.6%)
 Ionuț Arțăriși         210 (0.6%)
 alatynskaya                195 (0.5%)
-Covers 82.186548% of changes
+Covers 82.072053% of changes
 
 Developers with the most lines removed
 Mark McLoughlin           1761 (9.8%)
-Tom Fifield               1461 (8.2%)
+Tom Fifield               1461 (8.1%)
 Chmouel Boudjnah           633 (3.5%)
 Yuriy Taraday              325 (1.8%)
 Monty Taylor               256 (1.4%)
@@ -59,14 +59,14 @@ Ionuț Arțăriși          11 (0.1%)
 Joe Gordon                   7 (0.0%)
 Tim Simpson                  1 (0.0%)
 Gabriel Hurley               1 (0.0%)
-Covers 25.346601% of changes
+Covers 25.257646% of changes
 
 Top changeset contributors by employer
-Rackspace                   80 (26.0%)
-Red Hat                     74 (24.0%)
-IBM                         29 (9.4%)
-SUSE                        19 (6.2%)
-Mirantis                    15 (4.9%)
+Rackspace                   81 (26.0%)
+Red Hat                     75 (24.1%)
+IBM                         30 (9.6%)
+SUSE                        19 (6.1%)
+Mirantis                    15 (4.8%)
 HP                          14 (4.5%)
 Nebula                      14 (4.5%)
 CERN                        10 (3.2%)
@@ -82,12 +82,12 @@ Cloudscaling                 2 (0.6%)
 DreamHost                    2 (0.6%)
 eNovance                     2 (0.6%)
 nathanael.i.burton.work@gmail.com    2 (0.6%)
-Covers 95.129870% of changesets
+Covers 95.176849% of changesets
 
 Top lines changed by employer
-Rackspace                 9575 (25.6%)
-Red Hat                   8859 (23.7%)
-IBM                       8501 (22.7%)
+Rackspace                 9606 (25.6%)
+Red Hat                   8912 (23.7%)
+IBM                       8507 (22.7%)
 HP                        4000 (10.7%)
 University of Melbourne   1462 (3.9%)
 CERN                       811 (2.2%)
@@ -105,7 +105,7 @@ niuwl586@gmail.com          94 (0.3%)
 nathanael.i.burton.work@gmail.com   68 (0.2%)
 Internap                    68 (0.2%)
 dirk@dmllr.de               65 (0.2%)
-Covers 99.382980% of changes
+Covers 99.384460% of changes
 
 Employers with the most hackers (total 74)
 Red Hat                     11 (14.9%)

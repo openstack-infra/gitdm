@@ -1,13 +1,13 @@
-Processed 943 review from 60 developers
+Processed 949 review from 60 developers
 28 employers found
 
-Developers with the most reviews (total 943)
-dolph                      208 (22.1%)
-ayoung                     183 (19.4%)
-heckj                      157 (16.6%)
-guang-yee                   87 (9.2%)
-blk-u                       63 (6.7%)
-henry-nash                  44 (4.7%)
+Developers with the most reviews (total 949)
+dolph                      208 (21.9%)
+ayoung                     185 (19.5%)
+heckj                      157 (16.5%)
+guang-yee                   88 (9.3%)
+blk-u                       63 (6.6%)
+henry-nash                  45 (4.7%)
 btopol                      33 (3.5%)
 chungg                      21 (2.2%)
 spzala                      19 (2.0%)
@@ -20,16 +20,16 @@ mordred                      6 (0.6%)
 yorik-sar                    5 (0.5%)
 chmouel                      4 (0.4%)
 dripton                      4 (0.4%)
+ttx                          3 (0.3%)
 markmc                       3 (0.3%)
-jogo                         3 (0.3%)
-Covers 93.531283% of reviews
+Covers 93.361433% of reviews
 
-Top reviewers by employer (total 943)
-Rackspace                  216 (22.9%)
-Red Hat                    204 (21.6%)
-IBM                        190 (20.1%)
-Nebula                     164 (17.4%)
-HP                         106 (11.2%)
+Top reviewers by employer (total 949)
+Rackspace                  218 (23.0%)
+Red Hat                    206 (21.7%)
+IBM                        191 (20.1%)
+Nebula                     164 (17.3%)
+HP                         107 (11.3%)
 SUSE                        11 (1.2%)
 Intel                        7 (0.7%)
 aloga@ifca.unican.es         6 (0.6%)
@@ -45,4 +45,4 @@ AT&T                         2 (0.2%)
 roampune@gmail.com           2 (0.2%)
 allanfeid@gmail.com          1 (0.1%)
 dirk@dmllr.de                1 (0.1%)
-Covers 99.151644% of reviews
+Covers 99.157007% of reviews
