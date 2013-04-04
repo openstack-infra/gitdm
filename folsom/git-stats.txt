@@ -113,7 +113,7 @@ NetApp                    5584 (1.2%)
 HP                        4884 (1.0%)
 SwiftStack                3885 (0.8%)
 Cisco Systems             3141 (0.7%)
-Microsoft                 3095 (0.7%)
+Cloudbase Solutions                 3095 (0.7%)
 Citrix                    2638 (0.6%)
 Covers 94.019142% of changes
 

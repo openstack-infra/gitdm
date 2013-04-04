@@ -43,6 +43,6 @@ SolidFire                   28 (1.6%)
 Cloudscaling                26 (1.5%)
 Metacloud                   22 (1.2%)
 University of Melbourne     20 (1.1%)
-Microsoft                   20 (1.1%)
+Cloudbase Solutions                   20 (1.1%)
 SwiftStack                  18 (1.0%)
 Covers 83.011364% of bugs

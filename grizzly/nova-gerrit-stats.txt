@@ -44,5 +44,5 @@ SolidFire                   16 (0.2%)
 NetEase                     14 (0.2%)
 NEC                         12 (0.2%)
 Cisco Systems               11 (0.2%)
-Microsoft                   11 (0.2%)
+Cloudbase Solutions                   11 (0.2%)
 Covers 98.226528% of reviews

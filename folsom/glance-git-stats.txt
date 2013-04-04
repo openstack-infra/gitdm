@@ -79,7 +79,7 @@ Cloudscaling                 1 (0.3%)
 AT&T                         1 (0.3%)
 Nimbis Services              1 (0.3%)
 DreamHost                    1 (0.3%)
-Microsoft                    1 (0.3%)
+Cloudbase Solutions                    1 (0.3%)
 Covers 98.907104% of changesets
 
 Top lines changed by employer
