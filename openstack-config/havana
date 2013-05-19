@@ -1,0 +1,8 @@
+# project revisions
+nova 2013.1..HEAD
+glance 2013.1..HEAD
+swift 1.8.0..HEAD
+keystone 2013.1..HEAD
+horizon 2013.1..HEAD
+quantum 2013.1..HEAD
+cinder 2013.1..HEAD
