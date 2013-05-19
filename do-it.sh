@@ -138,6 +138,9 @@ if [ "$GERRIT_STATS" = "y" ] ; then
             python gerritdm -l 20 \
                 < "${TEMPDIR}/${project}-${RELEASE}-reviewers.txt" \
                 > "${TEMPDIR}/${project}-gerrit-stats.txt"
+            python gerritdm -z \
+                < "${TEMPDIR}/${project}-${RELEASE}-reviewers.txt" \
+                > "${TEMPDIR}/${project}-gerrit-stats-all.txt"
         done
 
     > "${TEMPDIR}/gerrit-reviewers.txt"
@@ -146,6 +149,7 @@ if [ "$GERRIT_STATS" = "y" ] ; then
             cat "${TEMPDIR}/${project}-${RELEASE}-reviewers.txt" >> "${TEMPDIR}/gerrit-reviewers.txt"
         done
     python gerritdm -l 20 < "${TEMPDIR}/gerrit-reviewers.txt" > "${TEMPDIR}/gerrit-stats.txt"
+    python gerritdm -z < "${TEMPDIR}/gerrit-reviewers.txt" > "${TEMPDIR}/gerrit-stats-all.txt"
 fi
 
 cd ${BASEDIR}
