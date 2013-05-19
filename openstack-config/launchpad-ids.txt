@@ -393,7 +393,6 @@ sasimpson sasimpson@gmail.com
 sateesh-chodapuneedi sateesh.chodapuneedi@citrix.com
 sathish-nagappan sathish.nagappan@nebula.com
 sdague sdague@linux.vnet.ibm.com
-sdague-b sdague@linux.vnet.ibm.com
 sdake sdake@redhat.com
 shakhat ishakhat@mirantis.com
 shweta-ap05 shpadubi@cisco.com
