@@ -46,13 +46,15 @@ if [ "$GIT_STATS" = "y" ] ; then
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project x; do
             python gitdm -l 20 -n < "${TEMPDIR}/${project}-commits.log" > "${TEMPDIR}/${project}-git-stats.txt"
+            # also create a full dump with csv for further downstream processing
+            python gitdm -n -y -z -x "${TEMPDIR}/${project}-git-stats.csv" < "${TEMPDIR}/${project}-commits.log" > "${TEMPDIR}/${project}-git-stats-all.txt"
         done
 
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project x; do
             cat "${TEMPDIR}/${project}-commits.log" >> "${TEMPDIR}/git-commits.log"
         done
-    python gitdm -l 20 -n < "${TEMPDIR}/git-commits.log" > "${TEMPDIR}/git-stats.txt"
+    python gitdm  -n -y -z -x "${TEMPDIR}/git-stats.csv" < "${TEMPDIR}/git-commits.log" > "${TEMPDIR}/git-stats.txt"
 fi
 
 if [ "$LP_STATS" = "y" ] ; then
@@ -149,4 +151,7 @@ fi
 cd ${BASEDIR}
 rm -rf ${RELEASE} && mkdir ${RELEASE}
 mv ${TEMPDIR}/*stats.txt ${RELEASE}
+mv ${TEMPDIR}/*stats-all.txt ${RELEASE}
+mv ${TEMPDIR}/*.csv ${RELEASE}
+
 [ "$REMOVE_TEMPDIR" = "y" ] && rm -rf ${TEMPDIR} || echo "Not removing ${TEMPDIR}"
