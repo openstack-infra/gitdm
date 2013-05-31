@@ -9,7 +9,8 @@ GITLOGARGS="--no-merges --numstat -M --find-copies-harder"
 
 UPDATE_GIT=${UPDATE_GIT:-y}
 GIT_STATS=${GIT_STATS:-y}
-LP_STATS=${LP_STATS:-y}
+# LP_STATS disabled by default, they take forever
+LP_STATS=${LP_STATS:-n}
 QUERY_LP=${QUERY_LP:-y}
 GERRIT_STATS=${GERRIT_STATS:-y}
 REMOVE_TEMPDIR=${REMOVE_TEMPDIR:-y}
