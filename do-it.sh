@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# provide debugging output when desired
+function DEBUG() {
+    [ "$_DEBUG" == "on" ] && echo "DEBUG: $1"
+}
+
+# enable/disable debugging output
+_DEBUG="off"
+
 GITBASE=${GITBASE:-~/git/openstack}
 RELEASE=${RELEASE:-havana}
 BASEDIR=$(pwd)
@@ -24,14 +32,17 @@ fi
 if [ "$UPDATE_GIT" = "y" ]; then
     echo "Updating projects from git"
     if [ ! -d ${GITBASE} ] ; then
+        DEBUG "Creating missing ${GITBASE}"
         mkdir -p ${GITBASE}
     fi
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project x; do
           if [ ! -d ${GITBASE}/${project} ] ; then
+              DEBUG "Cloning missing ${project} from ${REPOBASE}/${project}"
               git clone ${REPOBASE}/${project} ${GITBASE}/${project}
           fi
           cd ${GITBASE}/${project}
+          DEBUG "Fetching updates to ${project}"
           git fetch origin 2>/dev/null
         done
 fi
@@ -40,6 +51,7 @@ if [ "$GIT_STATS" = "y" ] ; then
     echo "Generating git commit logs"
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project revisions excludes x; do
+            DEBUG "Generating git commit log for ${project}"
             cd ${GITBASE}/${project}
             git log ${GITLOGARGS} ${revisions} > "${TEMPDIR}/${project}-commits.log"
             if [ -n "$excludes" ]; then
@@ -53,11 +65,13 @@ if [ "$GIT_STATS" = "y" ] ; then
     cd ${BASEDIR}
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project x; do
+            DEBUG "Generating git stats for ${project}"
             python gitdm -l 20 -n < "${TEMPDIR}/${project}-commits.log" > "${TEMPDIR}/${project}-git-stats.txt"
             # also create a full dump with csv for further downstream processing
             python gitdm -n -y -z -x "${TEMPDIR}/${project}-git-stats.csv" < "${TEMPDIR}/${project}-commits.log" > "${TEMPDIR}/${project}-git-stats-all.txt"
         done
 
+    DEBUG "Generating aggregate git stats for all projects"
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project x; do
             cat "${TEMPDIR}/${project}-commits.log" >> "${TEMPDIR}/git-commits.log"
@@ -70,6 +84,7 @@ if [ "$LP_STATS" = "y" ] ; then
     cd ${BASEDIR}
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project x; do
+            DEBUG "Generating a list of defects for ${project}"
             if [ ! -f "${TEMPDIR}/${project}-bugs.log" -a "$QUERY_LP" = "y" ]; then
                 ./tools/with_venv.sh python launchpad/buglist.py ${project} ${RELEASE} > "${TEMPDIR}/${project}-bugs.log"
             fi
@@ -84,10 +99,12 @@ if [ "$LP_STATS" = "y" ] ; then
     cd ${BASEDIR}
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project x; do
+            DEBUG "Generating launchpad stats for ${project}"
             grep -v '<unknown>' "${TEMPDIR}/${project}-bugs.log" |
                 python lpdm -l 20 > "${TEMPDIR}/${project}-lp-stats.txt"
         done
 
+    DEBUG "Generating aggregate launchpad stats for all projects"
     > "${TEMPDIR}/lp-bugs.log"
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project x; do
@@ -123,6 +140,7 @@ if [ "$GERRIT_STATS" = "y" ] ; then
     echo "Generating a list of commit IDs"
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project revisions x; do
+            DEBUG "Generating a list of commit IDs for ${project}"
             cd "${GITBASE}/${project}"
             git log --pretty=format:%H $revisions > \
                 "${TEMPDIR}/${project}-${RELEASE}-commit-ids.txt"
@@ -132,6 +150,7 @@ if [ "$GERRIT_STATS" = "y" ] ; then
     cd ${BASEDIR}
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project x; do
+            DEBUG "Parsing the gerrit queries for ${project}"
             python gerrit/parse-reviews.py \
                 "${TEMPDIR}/${project}-${RELEASE}-commit-ids.txt" \
                 "${CONFIGDIR}/launchpad-ids.txt" \
@@ -143,6 +162,7 @@ if [ "$GERRIT_STATS" = "y" ] ; then
     cd ${BASEDIR}
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project x; do
+            DEBUG "Generating gerrit statistics for ${project}"
             python gerritdm -l 20 \
                 < "${TEMPDIR}/${project}-${RELEASE}-reviewers.txt" \
                 > "${TEMPDIR}/${project}-gerrit-stats.txt"
@@ -151,6 +171,7 @@ if [ "$GERRIT_STATS" = "y" ] ; then
                 > "${TEMPDIR}/${project}-gerrit-stats-all.txt"
         done
 
+    DEBUG "Generating aggregate gerrit statistics for all projects"
     > "${TEMPDIR}/gerrit-reviewers.txt"
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project x; do
@@ -160,6 +181,7 @@ if [ "$GERRIT_STATS" = "y" ] ; then
     python gerritdm -z < "${TEMPDIR}/gerrit-reviewers.txt" > "${TEMPDIR}/gerrit-stats-all.txt"
 fi
 
+DEBUG "Cleaning up"
 cd ${BASEDIR}
 rm -rf ${RELEASE} && mkdir ${RELEASE}
 mv ${TEMPDIR}/*stats.txt ${RELEASE}
