@@ -1,11 +1,12 @@
 #!/bin/bash
 
-GITBASE=~/git/openstack
+GITBASE=${GITBASE:-~/git/openstack}
 RELEASE=${RELEASE:-havana}
 BASEDIR=$(pwd)
 CONFIGDIR=$(pwd)/openstack-config
 TEMPDIR=${TEMPDIR:-$(mktemp -d $(pwd)/dmtmp-XXXXXX)}
 GITLOGARGS="--no-merges --numstat -M --find-copies-harder"
+REPOBASE=${REPOBASE:-http://review.openstack.org/p/openstack}
 
 UPDATE_GIT=${UPDATE_GIT:-y}
 GIT_STATS=${GIT_STATS:-y}
@@ -22,8 +23,14 @@ fi
 
 if [ "$UPDATE_GIT" = "y" ]; then
     echo "Updating projects from git"
+    if [ ! -d ${GITBASE} ] ; then
+        mkdir -p ${GITBASE}
+    fi
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project x; do
+          if [ ! -d ${GITBASE}/${project} ] ; then
+              git clone ${REPOBASE}/${project} ${GITBASE}/${project}
+          fi
           cd ${GITBASE}/${project}
           git fetch origin 2>/dev/null
         done
