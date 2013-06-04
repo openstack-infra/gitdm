@@ -430,6 +430,12 @@ for logpatch in patches:
         continue
 
     #
+    # skip over any OpenStack Jenkins automated commits
+    #
+    if p.email == "jenkins@openstack.org":
+        continue
+
+    #
     # Record some global information - but only if this patch had
     # stuff which wasn't ignored.
     #
