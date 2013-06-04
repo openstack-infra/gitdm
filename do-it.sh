@@ -2,11 +2,11 @@
 
 # provide debugging output when desired
 function DEBUG() {
-    [ "$_DEBUG" == "on" ] && echo "DEBUG: $1"
+    [ "$GITDM_DEBUG" == "on" ] && echo "DEBUG: $1"
 }
 
 # enable/disable debugging output
-_DEBUG="off"
+GITDM_DEBUG=${GITDM_DEBUG:-"off"}
 
 GITBASE=${GITBASE:-~/git/openstack}
 RELEASE=${RELEASE:-havana}
