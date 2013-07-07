@@ -4,7 +4,7 @@ swift 1.8.0..HEAD
 glance 2013.1..HEAD
 keystone 2013.1..HEAD
 horizon 2013.1..HEAD
-quantum 2013.1..HEAD
+neutron 2013.1..HEAD
 cinder 2013.1..HEAD
 ceilometer 2013.1..HEAD
 heat 2013.1..HEAD
@@ -13,7 +13,7 @@ python-novaclient 2.13.0..HEAD
 python-swiftclient 1.3.0..HEAD
 python-glanceclient 0.9.0..HEAD
 python-keystoneclient 0.2.3..HEAD
-python-quantumclient 2.2.1..HEAD
+python-neutronclient 2.2.1..HEAD
 python-cinderclient 1.0.3..HEAD
 python-ceilometerclient 1.0.0..HEAD
 python-heatclient 0.2.2..HEAD
