@@ -155,6 +155,7 @@ ctennis caleb.tennis@gmail.com
 cthiel-suse c.thiel@telekom.de
 cthier cthier@gmail.com
 cweidenkeller conrad.weidenkeller@rackspace.com
+c-kassen c.kassen@telekom.de
 cyeoh-0 cyeoh@au1.ibm.com
 d1b dmitriy.budnik@gmail.com
 daeskp dae@velatum.com
@@ -200,6 +201,7 @@ devcamcar devin.carlen@gmail.com
 devcamcar devin@openstack.org
 devdeep-singh devdeep.singh@citrix.com
 dflorea dflorea@cisco.com
+d-gollub d.gollub@telekom.de
 dheidler dheidler@suse.de
 dhersam dan.hersam@hp.com
 diane-fleming diane.fleming@rackspace.com
@@ -590,6 +592,7 @@ msinhore msinhore@gmail.com
 mszilagyi mszilagyi@gmail.com
 mukul18 mukul18@gmail.com
 mvidner mvidner@suse.cz
+m-koderer m.koderer@telekom.de
 n0ano-ddd donald.d.dugger@intel.com
 nachiappan-veerappan-nachiappan nachiappan.veerappan-nachiappan@hp.com
 naehring naehring@b1-systems.de
@@ -782,6 +785,7 @@ sulochan-acharya sulochan.acharya@rackspace.co.uk
 swann-w swann.croiset@bull.net
 swann-w swann@oopss.org
 sylvain-afchain sylvain.afchain@enovance.com
+seif s.lotfy@telekom.de
 tagami-keisuke tagami.keisuke@lab.ntt.co.jp
 tagliapietra.alessandro tagliapietra.alessandro@gmail.com
 talkain tal.kain@ravellosystems.com
