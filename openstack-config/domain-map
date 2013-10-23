@@ -1,9 +1,11 @@
 # domain  employer  [< yyyy-mm-dd]
+99cloud.net 99cloud
 ansolabs.com Rackspace < 2012-07-20
 ansolabs.com Nebula
 atomia.com Atomia
 att.com AT&T
 attinteractive.com AT&T
+bigswitch.com Big Switch Networks
 canonical.com Canonical
 cern.ch CERN
 cisco.com Cisco Systems
@@ -65,6 +67,7 @@ valinux.co.jp VA Linux
 vertex.co.in NTT
 vexxhost.com VexxHost
 virtualtech.jp VirtualTech
+vmware.com VMware
 wikimedia.org Wikimedia Foundation
 yahoo-inc.com Yahoo!
 zadarastorage.com Zadara Storage
