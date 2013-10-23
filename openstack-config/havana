@@ -1,10 +1,10 @@
 # project revisions
-nova 2013.1..HEAD
-swift 1.8.0..HEAD
-glance 2013.1..HEAD
-keystone 2013.1..HEAD
-horizon 2013.1..HEAD
-neutron 2013.1..HEAD
-cinder 2013.1..HEAD
-ceilometer 2013.1..HEAD
-heat 2013.1..HEAD
+nova 2013.1..2013.2
+swift 1.8.0..1.10.0
+glance 2013.1..2013.2
+keystone 2013.1..2013.2
+horizon 2013.1..2013.2
+neutron 2013.1..2013.2
+cinder 2013.1..2013.2
+ceilometer 2013.1..2013.2
+heat 2013.1..2013.2
