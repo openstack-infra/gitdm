@@ -554,6 +554,7 @@ mathieu-rohon mathieu.rohon@gmail.com
 mathrock nathanael.i.burton@gmail.com
 mathrock nathanael.i.burton.work@gmail.com
 mat-o mat@grove.me.uk
+mattfarina matt@mattfarina.com
 matthias-sigxcpu matthias@sigxcpu.org
 matt-nycresistor matt.joyce@cloudscaling.com
 matt-sherborne msherborne@gmail.com
