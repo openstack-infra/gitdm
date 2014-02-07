@@ -229,7 +229,7 @@ filetype build potfiles.*$	# Build translations
 filetype build \.shlibs$	# Shared libraries
 # filetype build %debian%
 # filetype build %specs/%
-filetype build \.spec$	# It seems theyre necessary for RPM build
+filetype build \.spec$	# It seems they are necessary for RPM build
 filetype build \.def$	# build bootstrap for DLLs on win32
 #
 #
