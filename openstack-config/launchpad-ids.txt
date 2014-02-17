@@ -756,6 +756,8 @@ skraynev skraynev@mirantis.com
 sleepsonthefloor sleepsonthefloor@gmail.com
 slicknik SlickNik@gmail.com
 slukjanov slukjanov@mirantis.com
+slukjanov me@frostman.ru
+slukjanov me@slukjanov.name
 smoser smoser@brickies.net
 smoser smoser@ubuntu.com
 snaiksat snaiksat@cisco.com
