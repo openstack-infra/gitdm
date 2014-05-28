@@ -567,6 +567,8 @@ mcgrue ben@pistoncloud.com
 mdegerne mdegerne@gmail.com
 mdragon mdragon@rackspace.com
 mdrnstm m@metacloud.com
+mdrnstm morgan@metacloud.com
+mdrnstm morgan.fainberg@gmail.com
 meera-belur meera.belur@hp.com
 meizu647 meizu647@gmail.com
 melwitt melwitt@yahoo-inc.com
