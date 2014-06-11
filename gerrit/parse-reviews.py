@@ -34,13 +34,14 @@ class Reviewer:
         return cls(r.get('username'), r.get('name'), r.get('email'))
 
 class Approval:
-    CodeReviewed, Approved, Submitted, Verified = range(4)
+    CodeReviewed, Approved, Submitted, Verified, Workflow = range(5)
 
     type_map = {
-        'CRVW': CodeReviewed,
-        'APRV': Approved,
+        'Code-Review': CodeReviewed,
+        'Approved': Approved,
         'SUBM': Submitted,
-        'VRIF': Verified,
+        'Verified': Verified,
+        'Workflow': Workflow,
         }
 
     def __init__(self, type, value, date, by):
