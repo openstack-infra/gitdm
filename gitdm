@@ -434,6 +434,10 @@ for logpatch in patches:
     #
     if p.email == "jenkins@openstack.org":
         continue
+    if p.email == "jenkins@review.openstack.org":
+        continue
+    if p.email == "openstack-infra@lists.openstack.org":
+        continue
 
     #
     # Record some global information - but only if this patch had
