@@ -1,17 +1,17 @@
 #!/bin/bash
 
 # provide debugging output when desired
-function DEBUG() {
+function DEBUG {
     [ "$GITDM_DEBUG" == "on" ] && echo "DEBUG: $1"
 }
 
 # enable/disable debugging output
 GITDM_DEBUG=${GITDM_DEBUG:-"off"}
 
-# determine if a given parameter is a date matching the format YYYY-MM-DD, 
+# determine if a given parameter is a date matching the format YYYY-MM-DD,
 # i.e. 2013-09-13   This is used to decide if git should specify a start
 # date with '--since YYYY-MM-DD' rather than use an absolute changeset id
-function IS_DATE() {
+function IS_DATE {
     [[ $1 =~ ^[0-9][0-9][0-9][0-9]\-[0-9][0-9]\-[0-9][0-9]$ ]]
 }
 
@@ -47,13 +47,13 @@ if [ "$UPDATE_GIT" = "y" ]; then
     fi
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project x; do
-          if [ ! -d ${GITBASE}/${project} ] ; then
-              DEBUG "Cloning missing ${project} from ${REPOBASE}/${project}"
-              git clone ${REPOBASE}/${project} ${GITBASE}/${project}
-          fi
-          cd ${GITBASE}/${project}
-          DEBUG "Fetching updates to ${project}"
-          git fetch origin 2>/dev/null
+            if [ ! -d ${GITBASE}/${project} ] ; then
+                DEBUG "Cloning missing ${project} from ${REPOBASE}/${project}"
+                git clone ${REPOBASE}/${project} ${GITBASE}/${project}
+            fi
+            cd ${GITBASE}/${project}
+            DEBUG "Fetching updates to ${project}"
+            git fetch origin 2>/dev/null
         done
 fi
 
@@ -63,8 +63,8 @@ if [ "$GIT_STATS" = "y" ] ; then
         while read project revisions excludes x; do
             DEBUG "Generating git commit log for ${project}"
             cd ${GITBASE}/${project}
-            # match possible dates of the format YYYY-MM-DD to use in 
-            # supplying git with a '--since DATE' paramter instead of a 
+            # match possible dates of the format YYYY-MM-DD to use in
+            # supplying git with a '--since DATE' paramter instead of a
             # range of changeset ids
             if IS_DATE $revisions; then
                 DEBUG "Matched a git --since date of '${revisions}'"
@@ -141,8 +141,8 @@ if [ "$GERRIT_STATS" = "y" ] ; then
     grep -v '^#' ${CONFIGDIR}/${RELEASE} |
         while read project revisions x; do
             cd "${GITBASE}/${project}"
-            # match possible dates of the format YYYY-MM-DD to use in 
-            # supplying git with a '--since DATE' paramter instead of a 
+            # match possible dates of the format YYYY-MM-DD to use in
+            # supplying git with a '--since DATE' paramter instead of a
             # range of changeset ids
             if IS_DATE $revisions; then
                 DEBUG "Matched a git --since date of '${revisions}'"
@@ -171,8 +171,8 @@ if [ "$GERRIT_STATS" = "y" ] ; then
         while read project revisions x; do
             DEBUG "Generating a list of commit IDs for ${project}"
             cd "${GITBASE}/${project}"
-            # match possible dates of the format YYYY-MM-DD to use in 
-            # supplying git with a '--since DATE' paramter instead of a 
+            # match possible dates of the format YYYY-MM-DD to use in
+            # supplying git with a '--since DATE' paramter instead of a
             # range of changeset ids
             if IS_DATE $revisions; then
                 DEBUG "Matched a git --since date of '${revisions}'"
