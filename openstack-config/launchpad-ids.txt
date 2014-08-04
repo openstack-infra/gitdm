@@ -223,6 +223,7 @@ donagh-mccabe donagh.mccabe@hp.com
 donald-ngo donald.ngo@hp.com
 donal-lafferty donal.lafferty@citrix.com
 dougdoan dougdoan@gmail.com
+doug-hellmann doug@doughellmann.com
 doug-hellmann doug.hellmann@dreamhost.com
 doug-hellmann doug.hellmann@gmail.com
 dperaza dperaza@linux.vnet.ibm.com
