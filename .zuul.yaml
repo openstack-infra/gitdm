@@ -1,0 +1,14 @@
+- job:
+    name: gitdm-do-it
+    parent: unittests
+    description: |
+      Run do-it.sh for gitdm repository.
+    run: playbooks/do-it/run.yaml
+
+- project:
+    check:
+      jobs:
+        - gitdm-do-it
+    gate:
+      jobs:
+        - gitdm-do-it
